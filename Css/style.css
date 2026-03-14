@@ -175,32 +175,56 @@ header {
 }
 
 .hero-overlay {
-    background: rgba(227, 52, 47, 0.85);
+    background: rgba(227, 52, 47, 0.72);
     /* Capa roja semitransparente */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
     padding: 40px;
-    border-radius: 10px;
+    border-radius: 16px;
     color: white;
+    max-width: 720px;
+    width: min(90%, 720px);
+
+    /* Animación inicial */
+    opacity: 0;
+    transform: translateY(25px) scale(0.98);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+.hero-overlay.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .hero-overlay h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
+    font-size: 2.6rem;
+    margin-bottom: 22px;
+    line-height: 1.1;
+    text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 .btn-outline-white {
-    border: 2px solid white;
-    background: transparent;
+    border: 2px solid rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.14);
     color: white;
     padding: 12px 25px;
     border-radius: 25px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .btn-outline-white:hover {
     background: white;
     color: var(--primary-red);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+.btn-outline-white:active {
+    transform: translateY(0);
 }
 
 /* Layout Principal */
@@ -443,7 +467,6 @@ footer {
     display: none;
     background: var(--bg-light);
     min-height: 100vh;
-    padding: 80px 16px 40px;
     overflow-y: auto;
     justify-content: center;
     align-items: flex-start;
@@ -465,7 +488,6 @@ footer {
     flex-wrap: wrap;
     gap: 24px;
     background: var(--bg-white);
-    border-radius: 18px;
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     padding: 28px;
@@ -927,7 +949,7 @@ footer {
 #product-detail-page {
     background: var(--bg-light);
     min-height: 100vh;
-    padding-top: 70px;
+    padding-top: 80px;
 }
 
 .amazon-detail-layout img.product-thumb {

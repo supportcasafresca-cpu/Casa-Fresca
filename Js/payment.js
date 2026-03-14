@@ -1,5 +1,61 @@
 const BACKEND = 'https://backend-casafresca.onrender.com';
 
+// Keys para guardar datos de cliente en localStorage
+const CUSTOMER_INFO_KEY = 'casafresca_customer_info';
+
+function getSavedCustomerInfo() {
+    try {
+        const raw = localStorage.getItem(CUSTOMER_INFO_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch (err) {
+        console.warn('No se pudo leer info de cliente:', err);
+        return null;
+    }
+}
+
+function saveCustomerInfo(info) {
+    try {
+        localStorage.setItem(CUSTOMER_INFO_KEY, JSON.stringify(info));
+    } catch (err) {
+        console.warn('No se pudo guardar info de cliente:', err);
+    }
+}
+
+function populateCustomerInfo() {
+    const stored = getSavedCustomerInfo();
+    if (!stored) return;
+
+    const fullNameInput = document.getElementById('full-name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+
+    if (fullNameInput && stored.fullName) fullNameInput.value = stored.fullName;
+    if (emailInput && stored.email) emailInput.value = stored.email;
+    if (phoneInput && stored.phone) phoneInput.value = stored.phone;
+}
+
+function watchCustomerInfoInputs() {
+    const fullNameInput = document.getElementById('full-name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+
+    const save = () => {
+        const info = {
+            fullName: fullNameInput ? fullNameInput.value.trim() : '',
+            email: emailInput ? emailInput.value.trim() : '',
+            phone: phoneInput ? phoneInput.value.trim() : '',
+        };
+        saveCustomerInfo(info);
+    };
+
+    [fullNameInput, emailInput, phoneInput].forEach((input) => {
+        if (!input) return;
+        input.addEventListener('input', save);
+        input.addEventListener('change', save);
+    });
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePaymentSystem();
@@ -22,6 +78,10 @@ function initializePaymentSystem() {
         paymentForm.addEventListener('submit', processPayment);
     }
 
+    // Autocompletar datos de cliente usando localStorage
+    populateCustomerInfo();
+    watchCustomerInfoInputs();
+
     injectPaymentStyles();
 }
 
@@ -42,7 +102,7 @@ function showPaymentSection() {
     if (!paymentSection) return;
 
     paymentSection.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    if (typeof lockBodyScroll === 'function') lockBodyScroll();
     createPaymentOverlay();
     
     try {
@@ -51,6 +111,9 @@ function showPaymentSection() {
         console.error('Error actualizando resumen:', error);
         showPaymentNotification('Error al cargar los productos', 'error');
     }
+
+    // Cargar datos guardados del cliente (autofill)
+    populateCustomerInfo();
 
     // resetear checkbox de confirmación cada vez que se abre el formulario
     const checkbox = document.getElementById('location-confirm');
@@ -66,7 +129,7 @@ function hidePaymentSection() {
         paymentSection.classList.remove('active');
     }
 
-    document.body.style.overflow = '';
+    if (typeof unlockBodyScroll === 'function') unlockBodyScroll();
     removePaymentOverlay();
 }
 

@@ -4,7 +4,50 @@
         <meta charset="UTF-8">
         <base href="/">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- SEO BÁSICO -->
         <title>Casa Fresca - Tienda Online</title>
+        <meta name="description" content="Casa Fresca - Tienda online con productos para el hogar, cocina, limpieza, decoración y más. Envíos rápidos y atención personalizada.">
+        <meta name="keywords" content="Casa Fresca, tienda online, hogar, cocina, limpieza, decoración, compras, ofertas">
+        <meta name="author" content="Casa Fresca">
+
+        <!-- FAVICON -->
+        <link rel="icon" type="image/x-icon" href="Img/favicon.ico">
+
+        <!-- OPEN GRAPH (FACEBOOK, WHATSAPP, INSTAGRAM, MESSENGER) -->
+        <meta property="og:title" content="Casa Fresca - Tienda Online">
+        <meta property="og:description" content="Explora productos para el hogar, cocina, limpieza y más. Envíos rápidos y atención personalizada.">
+        <meta property="og:image" content="Img/social-share-banner.jpg">
+        <meta property="og:url" content="https://casa-fresca.onrender.com/">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Casa Fresca">
+
+        <!-- TWITTER / X -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Casa Fresca - Tienda Online">
+        <meta name="twitter:description" content="Productos para el hogar, cocina, limpieza y más. Envíos rápidos y atención personalizada.">
+        <meta name="twitter:image" content="Img/social-share-banner.jpg">
+
+        <!-- APPLE / SAFARI -->
+        <link rel="apple-touch-icon" href="Img/social-share-banner.jpg">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+        <!-- PWA (Opcional si luego agregas manifest.json) -->
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- ROBOTS -->
+        <meta name="robots" content="index, follow">
+        <meta name="googlebot" content="index, follow">
+
+        <!-- CANONICAL -->
+        <link rel="canonical" href="https://casa-fresca.onrender.com/">
+
+        <!-- SECURITY / PRIVACY -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
         <link rel="stylesheet" href="Css/style.css">
         <link rel="stylesheet" href="Css/responsive.css">
         <link rel="stylesheet"
@@ -15,7 +58,7 @@
         <header>
             <div class="nav-container">
                 <div class="menu-icon"><i class="fas fa-bars"></i></div>
-                <div class="logo">Casa Fresca</div>
+                <div class="logo" id="siteLogo" style="cursor: pointer;" tabindex="0" role="button" aria-label="Ir al inicio">Casa Fresca</div>
                 <div class="search-bar">
                     <input type="text" id="searchInput"
                         placeholder="Buscar productos..." autocomplete="off">
@@ -93,9 +136,9 @@
             <div class="socials">
                 <i class="fab fa-facebook-square"></i>
                 <i class="fab fa-instagram"></i>
-                <i class="fab fa-whatsapp"></i>
+                <i class="fab fa-whatsapp" onclick="openWhatsapp()"></i>
             </div>
-            <p><small>Powered by Casa Fresca</small></p>
+            <p><small>Powered by HLab</small></p>
         </footer>
         <div id="product-detail-page" class="product-detail-page"></div>
 

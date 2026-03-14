@@ -5,6 +5,41 @@ let lastListScroll = 0; // Guardar scroll previo al entrar en detalle de product
 let scrollPositions = {}; // Guardar posiciones de scroll por categoría
 let savedScrollPosition = 0; // Variable para restauración más robusta de scroll
 
+// Bloqueo de scroll de fondo (pila de bloqueos para manejar modales anidados)
+let bodyScrollLockCount = 0;
+let bodyScrollTop = 0;
+
+function lockBodyScroll() {
+  if (bodyScrollLockCount === 0) {
+    bodyScrollTop = window.scrollY || document.documentElement.scrollTop;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${bodyScrollTop}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.overflow = "hidden";
+    document.body.style.width = "100%";
+  }
+  bodyScrollLockCount++;
+}
+
+function unlockBodyScroll(force = false) {
+  if (force) {
+    bodyScrollLockCount = 1;
+  }
+  if (bodyScrollLockCount > 0) {
+    bodyScrollLockCount--;
+  }
+  if (bodyScrollLockCount === 0) {
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.overflow = "";
+    document.body.style.width = "";
+    window.scrollTo(0, bodyScrollTop);
+  }
+}
+
 // Elementos del DOM
 const productsGrid = document.getElementById("productsGrid");
 const searchInput = document.getElementById("searchInput");
@@ -45,6 +80,14 @@ function applyImageFallback(img) {
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchProducts();
   loadCartFromStorage();
+
+  // ANIMACIÓN: mostrar hero-overlay con efecto al cargar
+  const heroOverlay = document.querySelector(".hero-overlay");
+  if (heroOverlay) {
+    requestAnimationFrame(() => {
+      heroOverlay.classList.add("animate-in");
+    });
+  }
 
   // NUEVA LÓGICA: Leer el hash que envía el backend
   const hash = window.location.hash.substring(1);
@@ -384,12 +427,14 @@ function openCartDrawer() {
   cartModal.classList.add("open");
   cartDrawer.classList.add("open");
   cartModal.setAttribute("aria-hidden", "false");
+  lockBodyScroll();
 }
 
 function closeCartDrawer() {
   cartDrawer.classList.remove("open");
   cartModal.classList.remove("open");
   cartModal.setAttribute("aria-hidden", "true");
+  unlockBodyScroll();
 }
 
 function openProductDrawer() {
@@ -541,6 +586,33 @@ function initRouter() {
   } else {
     navigateToCategory("all", { replaceState: true });
   }
+
+  // Click en el logo siempre vuelve al home
+  const logo = document.getElementById("siteLogo");
+  if (logo) {
+    logo.addEventListener("click", goToHome);
+    logo.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        goToHome();
+      }
+    });
+  }
+}
+
+function goToHome() {
+  // Cerrar modales/drawers abiertos
+  if (typeof closeCartDrawer === "function") closeCartDrawer();
+  if (typeof hideProductDetail === "function") hideProductDetail({ fromPopState: true });
+  if (typeof hidePaymentSection === "function") hidePaymentSection();
+
+  // Garantizar que el scroll vuelva al inicio
+  if (typeof unlockBodyScroll === "function") unlockBodyScroll(true);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Forzar navegación a la categoría "all" y limpiar el hash
+  navigateToCategory("all", { replaceState: true });
+  history.replaceState({ type: "home" }, "", "/");
 }
 
 // 6. Detalles del Producto
@@ -732,3 +804,10 @@ window.addEventListener("click", (e) => {
   if (e.target === cartModal) closeCartDrawer();
   if (e.target === productDrawerOverlay) hideProductDetail();
 });
+
+function openWhatsapp() {
+  const phoneNumber = "+5363001537";
+  const message = encodeURIComponent("Hola, estoy interesado en sus productos. ¿Podrían brindarme más información?");
+  const url = `https://wa.me/${phoneNumber}?text=${message}`;
+  window.open(url, "_blank");
+}
