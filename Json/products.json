@@ -9,7 +9,9 @@
       "mas_vendido": true,
       "nuevo": false,
       "oferta": false,
-      "imagenes": ["aceite.jpg"],
+      "imagenes": [
+        "aceite.jpg"
+      ],
       "descripcion": "Aceite de oliva virgen extra de la mejor calidad.",
       "disponibilidad": true,
       "created_at": "2026-03-12T10:00:00.000Z",
@@ -24,7 +26,9 @@
       "mas_vendido": false,
       "nuevo": true,
       "oferta": true,
-      "imagenes": ["nectar.jpg"],
+      "imagenes": [
+        "nectar.jpg"
+      ],
       "descripcion": "Refrescante néctar de pera, ideal para meriendas.",
       "disponibilidad": true,
       "created_at": "2026-03-12T10:00:00.000Z",
@@ -39,11 +43,30 @@
       "mas_vendido": true,
       "nuevo": false,
       "oferta": false,
-      "imagenes": ["frijol.jpg"],
+      "imagenes": [
+        "frijol.jpg"
+      ],
       "descripcion": "Frijoles negros de primera calidad, grano entero.",
       "disponibilidad": true,
       "created_at": "2026-03-12T10:00:00.000Z",
       "modified_at": "2026-03-12T10:00:00.000Z"
+    },
+    {
+      "id": "prod_1773640574735_y438a05n8",
+      "nombre": "Test",
+      "categoria": "Aderezos",
+      "precio": 10,
+      "descuento": 10,
+      "mas_vendido": false,
+      "nuevo": true,
+      "oferta": true,
+      "imagenes": [
+        "soul_1773640574740.jpg"
+      ],
+      "descripcion": "alalalalala",
+      "disponibilidad": true,
+      "created_at": "2026-03-16T05:56:20.049Z",
+      "modified_at": "2026-03-16T05:56:20.049Z"
     }
   ]
 }
