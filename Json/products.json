@@ -50,6 +50,23 @@
       "disponibilidad": true,
       "created_at": "2026-03-12T10:00:00.000Z",
       "modified_at": "2026-03-12T10:00:00.000Z"
+    },
+    {
+      "id": "prod_1773789778406_n41ho9lpb",
+      "nombre": "Quekrkd",
+      "categoria": "Aderezos",
+      "precio": 10,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": true,
+      "oferta": false,
+      "imagenes": [
+        "1000021714_1773789778617.jpg"
+      ],
+      "descripcion": "Snkskkd",
+      "disponibilidad": true,
+      "created_at": "2026-03-17T23:23:04.075Z",
+      "modified_at": "2026-03-17T23:23:04.075Z"
     }
   ]
 }
