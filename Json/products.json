@@ -50,23 +50,6 @@
       "disponibilidad": true,
       "created_at": "2026-03-12T10:00:00.000Z",
       "modified_at": "2026-03-12T10:00:00.000Z"
-    },
-    {
-      "id": "prod_1773794294408_pp9uki6xq",
-      "nombre": "Test",
-      "categoria": "Aderezos",
-      "precio": 1,
-      "descuento": 0,
-      "mas_vendido": false,
-      "nuevo": true,
-      "oferta": false,
-      "imagenes": [
-        "1000021714_1773794294555.jpg"
-      ],
-      "descripcion": "",
-      "disponibilidad": true,
-      "created_at": "2026-03-18T00:38:22.449Z",
-      "modified_at": "2026-03-18T00:38:22.449Z"
     }
   ]
 }
