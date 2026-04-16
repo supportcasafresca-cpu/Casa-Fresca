@@ -13,9 +13,9 @@
         "aceite.jpg"
       ],
       "descripcion": "Aceite de oliva virgen extra de la mejor calidad.",
-      "disponibilidad": true,
+      "disponibilidad": false,
       "created_at": "2026-03-12T10:00:00.000Z",
-      "modified_at": "2026-03-12T10:00:00.000Z"
+      "modified_at": "2026-04-16T18:06:30.819Z"
     },
     {
       "id": "prod_002",
