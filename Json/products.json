@@ -2,54 +2,2757 @@
   "products": [
     {
       "id": "prod_001",
-      "nombre": "Aceite de Oliva «Alma» (1 litro)",
-      "categoria": "Aderezos",
-      "precio": 13.2,
+      "nombre": "Refresco Instantáneo (2Lt)",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 0.17,
       "descuento": 0,
-      "mas_vendido": true,
+      "mas_vendido": false,
       "nuevo": false,
       "oferta": false,
       "imagenes": [
-        "aceite.jpg"
+        "Refresco Instantáneo (2Lt).jpg"
       ],
-      "descripcion": "Aceite de oliva virgen extra de la mejor calidad.",
+      "descripcion": "",
       "disponibilidad": true,
-      "created_at": "2026-03-12T10:00:00.000Z",
-      "modified_at": "2026-04-16T18:10:46.595Z"
+      "created_at": "2026-04-17T05:25:41.385Z",
+      "modified_at": "2026-04-17T05:25:41.387Z"
     },
     {
       "id": "prod_002",
-      "nombre": "Pack x 12 Néctar de Pera (12x330ml)",
-      "categoria": "Bebidas no alcohólicas",
-      "precio": 15.22,
-      "descuento": 10,
+      "nombre": "Carne de cerdo x Lb",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 2.9,
+      "descuento": 0,
       "mas_vendido": false,
-      "nuevo": true,
-      "oferta": true,
+      "nuevo": false,
+      "oferta": false,
       "imagenes": [
-        "nectar.jpg"
+        "Carne de cerdo x Lb.jpg"
       ],
-      "descripcion": "Refrescante néctar de pera, ideal para meriendas.",
+      "descripcion": "",
       "disponibilidad": true,
-      "created_at": "2026-03-12T10:00:00.000Z",
-      "modified_at": "2026-03-12T10:00:00.000Z"
+      "created_at": "2026-04-17T05:25:41.387Z",
+      "modified_at": "2026-04-17T05:25:41.387Z"
     },
     {
       "id": "prod_003",
+      "nombre": "Azúcar blanca x lb",
+      "categoria": "Despensa",
+      "precio": 1.17,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Azúcar blanca x lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.387Z",
+      "modified_at": "2026-04-17T05:25:41.387Z"
+    },
+    {
+      "id": "prod_004",
+      "nombre": "Plátano macho x unidad",
+      "categoria": "Viandas y Verduras",
+      "precio": 0.31,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Plátano macho x unidad.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.387Z",
+      "modified_at": "2026-04-17T05:25:41.387Z"
+    },
+    {
+      "id": "prod_005",
+      "nombre": "Chupa Chupa x unidad",
+      "categoria": "Confitura",
+      "precio": 0.2,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Chupa Chupa x unidad.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.387Z",
+      "modified_at": "2026-04-17T05:25:41.387Z"
+    },
+    {
+      "id": "prod_006",
+      "nombre": "Carne de ovejo x lb",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 2.14,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Carne de ovejo x lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_007",
+      "nombre": "Espaguetis (500g)",
+      "categoria": "Despensa",
+      "precio": 0.87,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Espaguetis (500g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_008",
+      "nombre": "Azúcar Parda x lb",
+      "categoria": "Despensa",
+      "precio": 1.33,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Azúcar Parda x lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_009",
+      "nombre": "Frijol Negro x Lb",
+      "categoria": "Despensa",
+      "precio": 1.43,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Frijol Negro x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_010",
+      "nombre": "Paquete de cuartos de pollo 10 lbs",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 14,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de cuartos de pollo 10 lbs.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_011",
+      "nombre": "Cartón de Huevos",
+      "categoria": "Despensa",
+      "precio": 9,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cartón de Huevos.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_012",
+      "nombre": "Aceite (900ml)",
+      "categoria": "Despensa",
+      "precio": 3.87,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Aceite (900ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_013",
+      "nombre": "Arroz Criolllo x Libra",
+      "categoria": "Despensa",
+      "precio": 1.17,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Arroz Criolllo x Libra.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_014",
+      "nombre": "Caramelo de Leche x unidad",
+      "categoria": "Confitura",
+      "precio": 0.17,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caramelo de Leche x unidad.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_015",
+      "nombre": "Arroz (1Kg)",
+      "categoria": "Despensa",
+      "precio": 2.17,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Arroz (1Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_016",
+      "nombre": "Chuletas de cerdo x Lb",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 3.31,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Chuletas de cerdo x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_017",
+      "nombre": "Pasta de tomate Vima (400g)",
+      "categoria": "Despensa",
+      "precio": 1.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pasta de tomate Vima (400g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_018",
+      "nombre": "Boniato x Lb",
+      "categoria": "Viandas y Verduras",
+      "precio": 0.53,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Boniato x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_019",
+      "nombre": "Mano de plátano burro",
+      "categoria": "Viandas y Verduras",
+      "precio": 0.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Mano de plátano burro.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_020",
+      "nombre": "Paquete de picadillo de pollo 1kg",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 2.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de picadillo de pollo 1kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_021",
+      "nombre": "Frijol Rojo x Lb",
+      "categoria": "Despensa",
+      "precio": 2.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Frijol Rojo x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_022",
+      "nombre": "Queso Blanco x Lb",
+      "categoria": "Lácteos",
+      "precio": 2.91,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Queso Blanco x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_023",
+      "nombre": "Cervezas Cristal (355ml)",
+      "categoria": "Bebidas alcohólicas",
+      "precio": 1.15,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cervezas Cristal (355ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_024",
+      "nombre": "Leche entera en polvo (1kg)",
+      "categoria": "Despensa",
+      "precio": 8.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Leche entera en polvo (1kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_025",
+      "nombre": "Papa x Lb",
+      "categoria": "Viandas y Verduras",
+      "precio": 1.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Papa x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_026",
+      "nombre": "Tomate x Lb",
+      "categoria": "Viandas y Verduras",
+      "precio": 2.67,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Tomate x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_027",
+      "nombre": "Frazada de Piso",
+      "categoria": "Utiles del Hogar",
+      "precio": 0.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Frazada de Piso.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_028",
+      "nombre": "Picadillo de Pollo (400g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 1.47,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Picadillo de Pollo (400g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_029",
+      "nombre": "Azúcar Blanca (1Kg)",
+      "categoria": "Despensa",
+      "precio": 1.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Azúcar Blanca (1Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_030",
       "nombre": "Frijol Negro (500g)",
       "categoria": "Despensa",
       "precio": 1.73,
       "descuento": 0,
-      "mas_vendido": true,
+      "mas_vendido": false,
       "nuevo": false,
       "oferta": false,
       "imagenes": [
-        "frijol.jpg"
+        "Frijol Negro (500g).jpg"
       ],
-      "descripcion": "Frijoles negros de primera calidad, grano entero.",
+      "descripcion": "",
       "disponibilidad": true,
-      "created_at": "2026-03-12T10:00:00.000Z",
-      "modified_at": "2026-03-12T10:00:00.000Z"
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_031",
+      "nombre": "Garbanzos (500g)",
+      "categoria": "Despensa",
+      "precio": 2.49,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Garbanzos (500g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_032",
+      "nombre": "Detergente (500g)",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.47,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Detergente (500g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_033",
+      "nombre": "Caja de Cervezas Cristal",
+      "categoria": "Bebidas alcohólicas",
+      "precio": 23.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de Cervezas Cristal.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_034",
+      "nombre": "Tocino Natural de Cerdo (gordo) x Lb",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 3.33,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Tocino Natural de Cerdo (gordo) x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_035",
+      "nombre": "Queso Crema Vima (200g)",
+      "categoria": "Aderezos",
+      "precio": 3.29,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Queso Crema Vima (200g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_036",
+      "nombre": "Mayonesa Light Vima (450ml)",
+      "categoria": "Aderezos",
+      "precio": 3.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Mayonesa Light Vima (450ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_037",
+      "nombre": "Leche Evaporada «Vima» (377ml)",
+      "categoria": "Despensa",
+      "precio": 2.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Leche Evaporada «Vima» (377ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_038",
+      "nombre": "Spam de Pollo (340g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 2.27,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Spam de Pollo (340g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_039",
+      "nombre": "Paquete de Galletas de Sal (1Kg)",
+      "categoria": "Confitura",
+      "precio": 3.74,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Galletas de Sal (1Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_040",
+      "nombre": "Caja de cuartos de pollo 40lbs",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 54,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de cuartos de pollo 40lbs.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_041",
+      "nombre": "Cake",
+      "categoria": "Confitura",
+      "precio": 14.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cake.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_042",
+      "nombre": "Cabeza de Ajo x unidad",
+      "categoria": "Despensa",
+      "precio": 0.51,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cabeza de Ajo x unidad.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_043",
+      "nombre": "Desodorante Keewell (90ml)",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Desodorante Keewell (90ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_044",
+      "nombre": "Paquete de Caramelos de Leche (50/u)",
+      "categoria": "Confitura",
+      "precio": 4.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Caramelos de Leche(50u).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_045",
+      "nombre": "Paquete de Harina «Vima» (1kg)",
+      "categoria": "Despensa",
+      "precio": 2.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Harina «Vima» (1kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_046",
+      "nombre": "Jamón Bravo Rápido (2kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 22.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Jamón Bravo Rápido (2kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_047",
+      "nombre": "Cervezas Bucanero (355ml)",
+      "categoria": "Bebidas alcohólicas",
+      "precio": 1.15,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cervezas Bucanero (355ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_048",
+      "nombre": "Café Molido Natural Vima (250g)",
+      "categoria": "Despensa",
+      "precio": 6.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Café Molido Natural Vima (250g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_050",
+      "nombre": "Papas Prefritas (1Kg)",
+      "categoria": "Despensa",
+      "precio": 5.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Papas Prefritas (1Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_051",
+      "nombre": "Paquete de Salchichas 10u, 340g",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 1.59,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Salchichas 10u, 340g.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_052",
+      "nombre": "Troncho de Pescado en Aceite Vegetal (425g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 3.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Troncho de Pescado en Aceite Vegetal (425g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_053",
+      "nombre": "Caja de Cervezas Bucanero",
+      "categoria": "Bebidas alcohólicas",
+      "precio": 23.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de Cervezas Bucanero.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_054",
+      "nombre": "Galletas «Hello» Vainilla (50g)",
+      "categoria": "Confitura",
+      "precio": 0.58,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas «Hello» Vainilla (50g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_055",
+      "nombre": "Caja de refresco Naranja",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 17.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de refresco Naranja.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_056",
+      "nombre": "Caja de refresco Limón",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 17.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de refresco Limón.png"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_057",
+      "nombre": "Maicena (1Kg)",
+      "categoria": "Despensa",
+      "precio": 5.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Maicena (1Kg).png"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_058",
+      "nombre": "Paquete de íntima 8u",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.17,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de íntima 8u.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_059",
+      "nombre": "Carne de Res Enlatada (400g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 2.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Carne de Res Enlatada (400g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_060",
+      "nombre": "Pernil de cerdo asado (20 libras)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 58,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pernil de cerdo asado (20 libras).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_061",
+      "nombre": "Cake Tres Leches Pequeño",
+      "categoria": "Confitura",
+      "precio": 17.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cake Tres Leches Pequeño.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_062",
+      "nombre": "Protector Diario (18u)",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.34,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Protector Diario (18u).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_064",
+      "nombre": "Pernil de cerdo asado (15 libras)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 50,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pernil de cerdo asado (15 libras).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_065",
+      "nombre": "Galletas «ShowGol» Chocolate (76g)",
+      "categoria": "Confitura",
+      "precio": 0.7,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas «ShowGol» Chocolate (76g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_066",
+      "nombre": "Salsa Cocktail «Vima» (225ml)",
+      "categoria": "Aderezos",
+      "precio": 3.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Salsa Cocktail «Vima» (225ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_067",
+      "nombre": "Troncho de Pescado en Tomate (425g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 3.47,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Troncho de Pescado en Tomate (425g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_068",
+      "nombre": "Atún en Aceite Vegetal (140g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 1.77,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Atún en Aceite Vegetal (140g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_069",
+      "nombre": "Vinagre (1Litro)",
+      "categoria": "Despensa",
+      "precio": 3.47,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Vinagre (1Litro).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_070",
+      "nombre": "Pack x 12 Sal y Pimienta «Vima",
+      "categoria": "Aderezos",
+      "precio": 1.27,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pack x 12 Sal y Pimienta «Vima.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_071",
+      "nombre": "Paquete de sal (1kg)",
+      "categoria": "Despensa",
+      "precio": 0.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de sal (1kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_072",
+      "nombre": "Coditos Doga (500g)",
+      "categoria": "Despensa",
+      "precio": 0.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Coditos Doga (500g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_073",
+      "nombre": "Galletas «ShowGol» Dulce de Leche (76g)",
+      "categoria": "Confitura",
+      "precio": 0.7,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas «ShowGol» Dulce de Leche (76g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": false,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_074",
+      "nombre": "Atún en Aceite Vegetal Premium (1kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 15.77,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Atún en Aceite Vegetal Premium (1kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_075",
+      "nombre": "Queso Gouda Vima Premium (3Kg)",
+      "categoria": "Lácteos",
+      "precio": 36.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Queso Gouda Vima Premium (3Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_076",
+      "nombre": "Frijol Pinto x Lb",
+      "categoria": "Despensa",
+      "precio": 1.47,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Frijol Pinto x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.388Z"
+    },
+    {
+      "id": "prod_077",
+      "nombre": "Spam de Res (340g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 2.27,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Spam de Res (340g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.388Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_078",
+      "nombre": "Leche condensada (390g)",
+      "categoria": "Despensa",
+      "precio": 1.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Leche condensada (390g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_079",
+      "nombre": "Gelatina sabor Piña 🍍 (35g)",
+      "categoria": "Confitura",
+      "precio": 0.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Gelatina sabor Piña(35g).png"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_080",
+      "nombre": "Toallitas Húmedas (80u)",
+      "categoria": "Aseo y Belleza",
+      "precio": 2.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Toallitas Húmedas (80u).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_081",
+      "nombre": "Cake Tres Leches Grande",
+      "categoria": "Confitura",
+      "precio": 31.5,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cake Tres Leches Grande.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_082",
+      "nombre": "Servilletas (100u)",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.87,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Servilletas (100u).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_083",
+      "nombre": "Ketchup (310ml)",
+      "categoria": "Aderezos",
+      "precio": 1.87,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Ketchup (310ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_084",
+      "nombre": "Chocolate en Polvo Rayan (350g)",
+      "categoria": "Confitura",
+      "precio": 6.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Chocolate en Polvo Rayan (350g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_085",
+      "nombre": "Jabon en Barra REEBAY",
+      "categoria": "Aseo y Belleza",
+      "precio": 0.89,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Jabon en Barra REEBAY.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_086",
+      "nombre": "Café Sello Rojo",
+      "categoria": "Despensa",
+      "precio": 9,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Café Sello Rojo.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_087",
+      "nombre": "Leche Condensada «Vima» (390g)",
+      "categoria": "Despensa",
+      "precio": 1.73,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Leche Condensada «Vima» (390g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_088",
+      "nombre": "Mostaza (300ml)",
+      "categoria": "Aderezos",
+      "precio": 2.29,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Mostaza (300ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_089",
+      "nombre": "Pimiento x Lb",
+      "categoria": "Viandas y Verduras",
+      "precio": 2.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pimiento x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_090",
+      "nombre": "Galletas DUL’CE",
+      "categoria": "Confitura",
+      "precio": 0.65,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas DUL’CE.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_091",
+      "nombre": "Croquetas de Pollo Vima (500g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 4.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Croquetas de Pollo Vima (500g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_093",
+      "nombre": "Pasta dental CRHOT",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.59,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pasta dental CRHOT.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_095",
+      "nombre": "Filete de Pescado Panga (456g)",
+      "categoria": "Pescados y Mariscos",
+      "precio": 3.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Filete de Pescado Panga (456g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_096",
+      "nombre": "Pack x 12 Néctar de Manzana 🍎 (12x330ml)",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 13.73,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pack x 12 Néctar de Manzana(12x330ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_097",
+      "nombre": "Pollo Entero 1800g (4Lb)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 11.29,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pollo Entero 1800g (4Lb).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_098",
+      "nombre": "Mostaza «Vima» (320g)",
+      "categoria": "Aderezos",
+      "precio": 2.61,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Mostaza «Vima» (320g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_099",
+      "nombre": "Paquete de muslos de pollo (2Kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 7.27,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de muslos de pollo (2Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_100",
+      "nombre": "Galletas Tea Biscuit",
+      "categoria": "Confitura",
+      "precio": 0.69,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas Tea Biscuit.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_101",
+      "nombre": "Galletas «ShowGol» Vainilla (76g)",
+      "categoria": "Confitura",
+      "precio": 0.7,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas «ShowGol» Vainilla (76g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_103",
+      "nombre": "Lomo de cerdo deshuesado (1Kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 7.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Lomo de cerdo deshuesado (1Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_104",
+      "nombre": "Papel Sanitario Lirio",
+      "categoria": "Aseo y Belleza",
+      "precio": 2,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Papel Sanitario Lirio.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_105",
+      "nombre": "Pernil de cerdo asado (25 libras)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 65,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pernil de cerdo asado (25 libras).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_106",
+      "nombre": "Smoothies (450g)",
+      "categoria": "Despensa",
+      "precio": 4.49,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Smoothies (450g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_107",
+      "nombre": "Dientes de Ajos Pelados 1kg",
+      "categoria": "Aderezos",
+      "precio": 4.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Dientes de Ajos Pelados 1kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_108",
+      "nombre": "Set de 5U de Maquina de Afeitar Dorco",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.59,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Set de 5U de Maquina de Afeitar Dorco.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_109",
+      "nombre": "Lomo de cerdo Premiun deshuesado loncheado (1Kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 9.65,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Lomo de cerdo Premiun deshuesado loncheado (1Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_110",
+      "nombre": "Pack de 12 Botellas de Agua Purificada",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 9.59,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pack de 12 Botellas de Agua Purificada.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_111",
+      "nombre": "Refresco Frised x unidad",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 0.89,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Refresco Frised x unidad.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_112",
+      "nombre": "Fresas Congeladas (454g)",
+      "categoria": "Despensa",
+      "precio": 3.67,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Fresas Congeladas (454g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_113",
+      "nombre": "Croquetas de Bacalao Vima (500g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 4.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Croquetas de Bacalao Vima (500g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_114",
+      "nombre": "Paquete 12 pastilla de Carne «Vima» (120g)",
+      "categoria": "Despensa",
+      "precio": 2.05,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete 12 pastilla de Carne «Vima» (120g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_115",
+      "nombre": "Aceite de Oliva «Vima» (1Litro)",
+      "categoria": "Aderezos",
+      "precio": 9.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Aceite de Oliva «Vima» (1Litro).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_116",
+      "nombre": "Pechuga de pollo (2Kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 14.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pechuga de pollo (2Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_117",
+      "nombre": "Paquete de Caramelos Masticables, sabor frutas, (300g)",
+      "categoria": "Confitura",
+      "precio": 3.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Caramelos Masticables, sabor frutas, (300g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_118",
+      "nombre": "Paquete de Caramelos Masticables, sabor café (300g)",
+      "categoria": "Confitura",
+      "precio": 3.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Caramelos Masticables, sabor café (300g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_119",
+      "nombre": "Cacao en Polvo (800g)",
+      "categoria": "Confitura",
+      "precio": 11.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cacao en Polvo (800g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_120",
+      "nombre": "Sazón Culantro y Achiote",
+      "categoria": "Aderezos",
+      "precio": 0.27,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Sazón Culantro y Achiote.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_121",
+      "nombre": "Paquete de Harina (1kg)",
+      "categoria": "Despensa",
+      "precio": 2.29,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Harina (1kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_122",
+      "nombre": "Cebolla Morada x Lb",
+      "categoria": "Viandas y Verduras",
+      "precio": 3.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cebolla Morada x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_123",
+      "nombre": "Néctar de Manzana 🍎 (330ml)",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 1.41,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Néctar de Manzana(330ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_124",
+      "nombre": "Yogurt Pote 125g, Pack de 4u",
+      "categoria": "Lácteos",
+      "precio": 2.9,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Yogurt Pote 125g, Pack de 4u.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_125",
+      "nombre": "Detergente Yeya 500g",
+      "categoria": "Aseo y Belleza",
+      "precio": 1.87,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Detergente Yeya 500g.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_126",
+      "nombre": "Shampoo Prolight Aguacate 600ml",
+      "categoria": "Aseo y Belleza",
+      "precio": 4.19,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Shampoo Prolight Aguacate 600ml.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_127",
+      "nombre": "Saco de Arroz Premium 100Lb",
+      "categoria": "Despensa",
+      "precio": 74.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Saco de Arroz Premium 100Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_128",
+      "nombre": "Paquete de Caramelos Masticables, sabor frutos secos (300g)",
+      "categoria": "Confitura",
+      "precio": 3.39,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Caramelos Masticables, sabor frutos secos (300g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_129",
+      "nombre": "Paquetes de Caramelos de Menta",
+      "categoria": "Confitura",
+      "precio": 3.29,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquetes de Caramelos de Menta.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_130",
+      "nombre": "Maíz Dulce Vima 1Kg",
+      "categoria": "Despensa",
+      "precio": 5.89,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Maíz Dulce Vima 1Kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_131",
+      "nombre": "Saco de Azúcar (110Lbs)",
+      "categoria": "Despensa",
+      "precio": 80,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Saco de Azúcar (110Lbs).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_132",
+      "nombre": "Cebolla Blanca x Lb",
+      "categoria": "Viandas y Verduras",
+      "precio": 3.37,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cebolla Blanca x Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_133",
+      "nombre": "Salsa Barbacoa «Vima» (320g)",
+      "categoria": "Aderezos",
+      "precio": 2.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Salsa Barbacoa «Vima» (320g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_134",
+      "nombre": "Pote de Refresco Instantáneo 2.5kg, sabor Piña Colada para 20Lt",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 7.27,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pote de Refresco Instantáneo 2.5kg, sabor Piña Colada para 20Lt.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_135",
+      "nombre": "Mollejas de Pollo 1kg",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 4.59,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Mollejas de Pollo 1kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_136",
+      "nombre": "Minidosis de Mantequilla, Packs 12u de (8g)",
+      "categoria": "Aderezos",
+      "precio": 2.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Minidosis de Mantequilla, Packs 12u de (8g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_137",
+      "nombre": "Macarrones con queso (206g)",
+      "categoria": "Despensa",
+      "precio": 0.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Macarrones con queso (206g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_138",
+      "nombre": "Queso Gouda, porción 1Kg",
+      "categoria": "Lácteos",
+      "precio": 14.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Queso Gouda, porción 1Kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_139",
+      "nombre": "Paquete 12 pastilla de Verduras «Vima» (120g)",
+      "categoria": "Despensa",
+      "precio": 2.05,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete 12 pastilla de Verduras «Vima» (120g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_140",
+      "nombre": "Vinagre de Vino Tinto (500 ml)",
+      "categoria": "Despensa",
+      "precio": 2.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Vinagre de Vino Tinto (500 ml).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_141",
+      "nombre": "Caja de Jugos mixtos, 24u",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 26.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de Jugos mixtos, 24u.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_142",
+      "nombre": "Pomo de Comino",
+      "categoria": "Aderezos",
+      "precio": 5.77,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pomo de Comino.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_143",
+      "nombre": "Galletas Nikito 120g",
+      "categoria": "Confitura",
+      "precio": 0.72,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Galletas Nikito 120g.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_144",
+      "nombre": "Bolsa Vima de tela, 1u",
+      "categoria": "Aseo y Belleza",
+      "precio": 0.49,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Bolsa Vima de tela, 1u.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_145",
+      "nombre": "Porrón de Aceite 17.5Lt",
+      "categoria": "Despensa",
+      "precio": 47.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Porrón de Aceite 17.5Lt.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_146",
+      "nombre": "Anillas de Calamar (454g)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 8.69,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Anillas de Calamar (454g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_147",
+      "nombre": "Caja de muslos de pollo (12Kg)",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 42.84,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Caja de muslos de pollo (12Kg).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_148",
+      "nombre": "Nevera Eko (3.5 pies)",
+      "categoria": "Electrodomésticos",
+      "precio": 255,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Nevera Eko (3.5 pies).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_149",
+      "nombre": "Nutella Vima 210g",
+      "categoria": "Confitura",
+      "precio": 4.29,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Nutella Vima 210g.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_150",
+      "nombre": "Garbanzos Extra 540g",
+      "categoria": "Despensa",
+      "precio": 2.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Garbanzos Extra 540g.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_151",
+      "nombre": "Salchichas Coctel 1kg",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 8.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Salchichas Coctel 1kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_152",
+      "nombre": "Carne de Mejillon Vima 1kg",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 6.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Carne de Mejillon Vima 1kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_153",
+      "nombre": "Filete de Tilapia Vima 1Lb",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 4.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Filete de Tilapia Vima 1Lb.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_154",
+      "nombre": "Chorizos Caseros Premium 1Kg",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 24.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Chorizos Caseros Premium 1Kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_155",
+      "nombre": "Chorizo Entero Premium 300g",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 7.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Chorizo Entero Premium 300g.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_156",
+      "nombre": "Cola de Camarón Argentino Premium 1Kg",
+      "categoria": "Cárnicos y Embutidos",
+      "precio": 37.49,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cola de Camarón Argentino Premium 1Kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_157",
+      "nombre": "Detergente Lavane en polvo 1kg",
+      "categoria": "Aseo y Belleza",
+      "precio": 3.47,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Detergente Lavane en polvo 1kg.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.389Z"
+    },
+    {
+      "id": "prod_158",
+      "nombre": "Paca de arroz de 30u de 1kg(66Lb)",
+      "categoria": "Despensa",
+      "precio": 47.97,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paca de arroz de 30u de 1kg(66Lb).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.389Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_159",
+      "nombre": "Pomo de agua 1.5Lt, packs de 6u",
+      "categoria": "Bebidas no alcohólicas",
+      "precio": 8.67,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Pomo de agua 1.5Lt, packs de 6u.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_160",
+      "nombre": "Cena Familiar para 25 personas",
+      "categoria": "Despensa",
+      "precio": 168,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Cena Familiar para 25 personas.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_161",
+      "nombre": "Shampoo Prolight Almendras 600ml",
+      "categoria": "Aseo y Belleza",
+      "precio": 4.19,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Shampoo Prolight Almendras 600ml.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_162",
+      "nombre": "Shampoo Prolight Menta 600ml",
+      "categoria": "Aseo y Belleza",
+      "precio": 4.19,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Shampoo Prolight Menta 600ml.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_163",
+      "nombre": "Freidora de Aire 4.5Lt",
+      "categoria": "Electrodomésticos",
+      "precio": 64.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Freidora de Aire 4.5Lt.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_164",
+      "nombre": "Olla Arrocera 4Lt",
+      "categoria": "Electrodomésticos",
+      "precio": 34.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Olla Arrocera 4Lt.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_165",
+      "nombre": "Salsa Rosa Rayan 440ml",
+      "categoria": "Aderezos",
+      "precio": 3.57,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Salsa Rosa Rayan 440ml.jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_166",
+      "nombre": "Paquete de Chupachups (48u)",
+      "categoria": "Confitura",
+      "precio": 6.99,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete de Chupachups (48u).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
+    },
+    {
+      "id": "prod_167",
+      "nombre": "Paquete 12 pastilla de Pescado «Vima» (120g)",
+      "categoria": "Despensa",
+      "precio": 2.05,
+      "descuento": 0,
+      "mas_vendido": false,
+      "nuevo": false,
+      "oferta": false,
+      "imagenes": [
+        "Paquete 12 pastilla de Pescado «Vima» (120g).jpg"
+      ],
+      "descripcion": "",
+      "disponibilidad": true,
+      "created_at": "2026-04-17T05:25:41.390Z",
+      "modified_at": "2026-04-17T05:25:41.390Z"
     }
   ]
 }

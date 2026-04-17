@@ -667,8 +667,8 @@ footer {
 .related-products-section {
     background: var(--bg-white);
     border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 40px;
+    padding: 10px;
+    margin-bottom: 10px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
 }
 
@@ -766,7 +766,7 @@ footer {
     }
 
     .related-products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 16px;
     }
 

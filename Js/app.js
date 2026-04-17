@@ -111,6 +111,7 @@ async function fetchProducts() {
     // Si data es un Array, lo usa. Si es un objeto, busca la propiedad .products
     allProducts = Array.isArray(data) ? data : (data.products || []);
 
+    renderCategories(allProducts);
     renderProducts(allProducts);
 
     // LÓGICA DE REDIRECCIÓN (Para que funcione el link del backend)
@@ -180,6 +181,35 @@ function normalizeText(str) {
     .replace(/[^a-z0-9\s]/gi, "")
     .trim()
     .toLowerCase();
+}
+
+function getUniqueCategories(products) {
+  return [
+    ...new Set(
+      products
+        .filter((prod) => prod.disponibilidad !== false)
+        .map((prod) => prod.categoria)
+        .filter(Boolean),
+    ),
+  ];
+}
+
+function renderCategories(products) {
+  const categories = getUniqueCategories(products);
+  categoryList.innerHTML = "";
+
+  const allItem = document.createElement("li");
+  allItem.dataset.category = "all";
+  allItem.className = "active";
+  allItem.textContent = "Ver Todo";
+  categoryList.appendChild(allItem);
+
+  categories.forEach((category) => {
+    const li = document.createElement("li");
+    li.dataset.category = category;
+    li.textContent = category;
+    categoryList.appendChild(li);
+  });
 }
 
 function levenshteinDistance(a, b, maxDistance = Infinity) {
