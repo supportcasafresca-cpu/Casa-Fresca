@@ -1203,9 +1203,9 @@
         "Galletas «ShowGol» Dulce de Leche (76g).jpg"
       ],
       "descripcion": "",
-      "disponibilidad": false,
+      "disponibilidad": true,
       "created_at": "2026-04-17T05:25:41.388Z",
-      "modified_at": "2026-04-17T05:25:41.388Z"
+      "modified_at": "2026-04-17T11:11:59.452Z"
     },
     {
       "id": "prod_074",
