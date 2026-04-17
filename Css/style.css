@@ -1122,3 +1122,296 @@ footer {
         transform: translateY(-4px);
     }
 }
+
+/* ============ ESTILOS DE DESCARGA DE APP ============ */
+
+/* Estructura de nav-icons */
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Botón de descarga en el header */
+.download-app-header-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--primary-red);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.download-app-header-btn:hover {
+    transform: scale(1.15);
+    color: #d63a2e;
+}
+
+/* Banner de descarga de app */
+.app-download-banner {
+    background: linear-gradient(135deg, var(--primary-red) 0%, #c72c23 100%);
+    padding: 24px;
+    margin: 0;
+    box-shadow: 0 4px 12px rgba(227, 52, 47, 0.25);
+    color: white;
+}
+
+.app-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.app-banner-icon {
+    font-size: 3.5rem;
+    flex-shrink: 0;
+    animation: icon-bounce 2.5s ease-in-out infinite;
+}
+
+@keyframes icon-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.app-banner-text {
+    flex: 1;
+    min-width: 200px;
+}
+
+.app-banner-text h3 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+}
+
+.app-banner-text p {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    line-height: 1.4;
+}
+
+.btn-download-app {
+    background: white;
+    color: var(--primary-red);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.btn-download-app:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    background: #f5f5f5;
+}
+
+.btn-download-app:active {
+    transform: translateY(0);
+}
+
+/* Modal/Drawer de descarga - Mejorado */
+#appDownloadModal {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1500;
+}
+
+#appDownloadModal.open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.app-download-drawer {
+    max-width: 600px;
+    width: min(95%, 600px);
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    background: var(--bg-white);
+    box-shadow: 0 -5px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#appDownloadModal.open .app-download-drawer {
+    transform: translateY(0);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Header del drawer de app mejorado */
+.app-download-drawer .drawer-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+}
+
+.app-download-drawer .drawer-header h2 {
+    font-size: 1.2rem !important;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-download-drawer .drawer-header i {
+    font-size: 1.4rem;
+}
+
+.app-download-content {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.app-info-card {
+    background: linear-gradient(135deg, var(--primary-red) 0%, #c72c23 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.app-info-card i {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.app-info-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+.app-info-card p {
+    font-size: 0.95rem;
+    opacity: 0.95;
+}
+
+.app-features {
+    background: var(--bg-light);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.app-features h4 {
+    color: var(--primary-red);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.app-features ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.app-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.app-features i {
+    color: var(--primary-red);
+    font-size: 1.1rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.app-download-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    text-align: center;
+}
+
+.app-download-section h4 {
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.app-download-section p {
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.app-download-section p i {
+    margin-right: 5px;
+    color: var(--primary-red);
+}
+
+.btn-download-modal {
+    background: linear-gradient(135deg, var(--primary-red) 0%, #c72c23 100%);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(227, 52, 47, 0.3);
+    margin-bottom: 12px;
+}
+
+.btn-download-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(227, 52, 47, 0.4);
+}
+
+.btn-download-modal:active {
+    transform: translateY(0);
+}
+
+.download-note {
+    background: rgba(227, 52, 47, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    border-left: 3px solid var(--primary-red);
+}

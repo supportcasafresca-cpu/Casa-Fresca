@@ -68,9 +68,14 @@
                         role="listbox"
                         aria-label="Sugerencias de búsqueda"></div>
                 </div>
-                <div class="cart-icon" id="openCartBtn">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span id="cartCount">0</span>
+                <div class="nav-icons">
+                    <button class="download-app-header-btn" id="downloadAppHeaderBtn" title="Descargar app" aria-label="Descargar aplicación">
+                        <i class="fab fa-android"></i>
+                    </button>
+                    <div class="cart-icon" id="openCartBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount">0</span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -81,6 +86,22 @@
                 <button class="btn-outline-white"
                     onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">ENTRAR
                     A LA TIENDA</button>
+            </div>
+        </section>
+
+        <!-- BANNER DE DESCARGA DE APP -->
+        <section class="app-download-banner">
+            <div class="app-banner-content">
+                <div class="app-banner-icon">
+                    <i class="fab fa-android"></i>
+                </div>
+                <div class="app-banner-text">
+                    <h3>Descarga Nuestra App</h3>
+                    <p>Compra más rápido y fácil desde tu móvil. Acceso a ofertas exclusivas y notificaciones de nuevos productos.</p>
+                </div>
+                <button class="btn-download-app" onclick="openAppDownloadModal()">
+                    <i class="fas fa-download"></i> Descargar APK
+                </button>
             </div>
         </section>
 
@@ -123,7 +144,7 @@
 
         <footer>
             <p>Copyright © 2026</p>
-            <p>www.casafresca.com</p>
+            <p>casa-fresca.onrender.com</p>
             <div class="socials">
                 <i class="fab fa-facebook-square"></i>
                 <i class="fab fa-instagram"></i>
@@ -299,6 +320,50 @@
                     style="width: auto; padding: 12px 30px;">Volver a la
                     tienda</button>
             </div>
+        </div>
+
+        <!-- MODAL DE DESCARGA DE APP -->
+        <div class="drawer-overlay" id="appDownloadModal" aria-hidden="true">
+            <aside class="drawer app-download-drawer" role="dialog" aria-label="Descargar aplicación">
+                <header class="drawer-header">
+                    <h2 style="color: var(--primary-red);">
+                        <i class="fab fa-android"></i> Descargar App Casa Fresca
+                    </h2>
+                    <button class="close-modal" onclick="closeAppDownloadModal()" aria-label="Cerrar">&times;</button>
+                </header>
+                <div class="app-download-content">
+                    <div class="app-info-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>La mejor experiencia de compra</h3>
+                        <p>Accede desde tu teléfono Android a todas las funciones de Casa Fresca.</p>
+                    </div>
+
+                    <div class="app-features">
+                        <h4>Ventajas de usar la App:</h4>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> <strong>Compras más rápidas</strong> - Acceso instantáneo a tu carrito y órdenes</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Notificaciones</strong> - Entérate de nuevos productos y ofertas</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Seguimiento</strong> - Rastrea tus pedidos en tiempo real</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Favoritos</strong> - Guarda tus productos preferidos</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Descuentos exclusivos</strong> - Ofertas solo para usuarios de la app</li>
+                        </ul>
+                    </div>
+
+                    <div class="app-download-section">
+                        <h4>Sistema Requerido:</h4>
+                        <p><i class="fab fa-android"></i> Android 6.0 o superior</p>
+                        
+                        <button class="btn-download-modal" onclick="triggerAppDownload()">
+                            <i class="fas fa-download"></i> Descargar APK Ahora
+                        </button>
+                        
+                        <p class="download-note">
+                            <i class="fas fa-info-circle"></i>
+                            El archivo se descargará directamente. Permite las instalaciones de fuentes desconocidas en tu dispositivo.
+                        </p>
+                    </div>
+                </div>
+            </aside>
         </div>
 
         <!-- Botón flotante de WhatsApp -->

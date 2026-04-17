@@ -75,3 +75,121 @@
         width: 100%;
     }
 }
+
+/* ============ RESPONSIVE PARA DESCARGA DE APP ============ */
+
+/* Desktop - Modal centrado */
+@media (min-width: 851px) {
+    #appDownloadModal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .app-download-drawer {
+        width: min(90%, 600px);
+        max-height: 90vh;
+        border-radius: 16px;
+        transform: scale(0.95) translateY(-20px);
+        opacity: 0;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), 
+                    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    #appDownloadModal.open .app-download-drawer {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Tablet y superior */
+@media (max-width: 850px) {
+    .app-banner-content {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .app-banner-icon {
+        order: -1;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .app-banner-text {
+        text-align: center;
+        order: 0;
+    }
+    
+    .btn-download-app {
+        order: 1;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+}
+
+/* Móvil */
+@media (max-width: 600px) {
+    .app-download-banner {
+        padding: 16px;
+    }
+    
+    .app-banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .app-banner-icon {
+        font-size: 2.8rem;
+    }
+    
+    .app-banner-text h3 {
+        font-size: 1.2rem;
+    }
+    
+    .app-banner-text p {
+        font-size: 0.9rem;
+    }
+    
+    .btn-download-app {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .app-download-drawer {
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        width: 100%;
+    }
+    
+    .app-download-content {
+        gap: 15px;
+    }
+    
+    .app-info-card {
+        padding: 20px;
+    }
+    
+    .app-info-card i {
+        font-size: 2rem;
+    }
+    
+    .app-features {
+        padding: 15px;
+    }
+    
+    .app-features h4 {
+        font-size: 1rem;
+    }
+    
+    .app-features li {
+        font-size: 0.9rem;
+    }
+    
+    .app-download-section {
+        padding: 15px;
+    }
+}

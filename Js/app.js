@@ -841,3 +841,152 @@ function openWhatsapp() {
   const url = `https://wa.me/${phoneNumber}?text=${message}`;
   window.open(url, "_blank");
 }
+
+// ============ FUNCIONES DE DESCARGA DE APP ============
+
+/**
+ * Detecta el sistema operativo del usuario
+ */
+function detectOS() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  
+  if (/android/i.test(userAgent)) {
+    return 'Android';
+  }
+  if (/iPad|iPhone|iPod/.test(userAgent)) {
+    return 'iOS';
+  }
+  if (/Windows NT|Win32/.test(userAgent)) {
+    return 'Windows';
+  }
+  if (/Macintosh|MacIntel|MacPPC|Mac68K/.test(userAgent)) {
+    return 'Mac';
+  }
+  if (/Linux|X11/.test(userAgent)) {
+    return 'Linux';
+  }
+  return 'Unknown';
+}
+
+/**
+ * Oculta/muestra elementos según el SO
+ */
+function initializeOSDetection() {
+  const os = detectOS();
+  const downloadHeaderBtn = document.getElementById("downloadAppHeaderBtn");
+  const downloadBanner = document.querySelector(".app-download-banner");
+  
+  // Solo mostrar en Android
+  if (os !== 'Android') {
+    if (downloadHeaderBtn) downloadHeaderBtn.style.display = "none";
+    if (downloadBanner) downloadBanner.style.display = "none";
+  }
+}
+
+/**
+ * Abre el modal de descarga de app
+ */
+function openAppDownloadModal() {
+  const os = detectOS();
+  
+  // Si no es Android, mostrar mensaje
+  if (os !== 'Android') {
+    alert('Esta aplicación solo está disponible para Android.\n\nPuedes seguir usando nuestra tienda web desde cualquier dispositivo.');
+    return;
+  }
+  
+  const modal = document.getElementById("appDownloadModal");
+  if (modal) {
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    lockBodyScroll();
+  }
+}
+
+/**
+ * Cierra el modal de descarga de app
+ */
+function closeAppDownloadModal() {
+  const modal = document.getElementById("appDownloadModal");
+  if (modal) {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    unlockBodyScroll();
+  }
+}
+
+/**
+ * Dispara la descarga del APK
+ */
+function triggerAppDownload() {
+  const os = detectOS();
+  
+  // Validar que sea Android
+  if (os !== 'Android') {
+    alert('La descarga de APK solo está disponible en dispositivos Android.');
+    return;
+  }
+  
+  // Crear un elemento anchor temporal para descargar
+  const link = document.createElement("a");
+  link.href = "/app/app-debug.apk";
+  link.download = "CasaFresca.apk";
+  link.style.display = "none";
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Cerrar modal después de iniciar descarga
+  setTimeout(() => {
+    closeAppDownloadModal();
+  }, 500);
+  
+  // Registrar descargas (opcional - para analytics)
+  console.log("📱 Descarga de app iniciada:", new Date().toLocaleString(), "OS:", os);
+}
+
+/**
+ * Alias para triggerAppDownload (llamada desde el botón)
+ */
+function downloadApp() {
+  triggerAppDownload();
+}
+
+// Inicializar event listeners para botones de descarga
+document.addEventListener("DOMContentLoaded", () => {
+  // Inicializar detección de SO
+  initializeOSDetection();
+  
+  // Botón de descarga en el header
+  const downloadAppHeaderBtn = document.getElementById("downloadAppHeaderBtn");
+  if (downloadAppHeaderBtn) {
+    downloadAppHeaderBtn.addEventListener("click", openAppDownloadModal);
+  }
+  
+  // Botón de descarga del banner
+  const downloadBannerBtn = document.querySelector(".btn-download-app");
+  if (downloadBannerBtn) {
+    downloadBannerBtn.addEventListener("click", openAppDownloadModal);
+  }
+  
+  // Cerrar modal cuando se clickea fuera
+  const appDownloadModal = document.getElementById("appDownloadModal");
+  if (appDownloadModal) {
+    appDownloadModal.addEventListener("click", (e) => {
+      if (e.target === appDownloadModal) {
+        closeAppDownloadModal();
+      }
+    });
+  }
+  
+  // Cerrar modal cuando se presiona Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const modal = document.getElementById("appDownloadModal");
+      if (modal && modal.classList.contains("open")) {
+        closeAppDownloadModal();
+      }
+    }
+  });
+});
