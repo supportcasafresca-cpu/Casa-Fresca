@@ -155,11 +155,12 @@ function renderProducts(productsToRender) {
       badgeHtml = `<div class="badge-oferta">-${descPorcentaje}%</div>`;
     }
 
+    const imageSrc = prod.imagenes?.[0] || "";
     const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
             ${badgeHtml}
-            <img src="${productImageUrl(prod.imagenes[0])}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+            <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
             <div class="product-category">${prod.categoria}</div>
             <h3 class="product-title">${prod.nombre}</h3>
             <div class="product-price">${precioHtml}</div>
@@ -167,6 +168,22 @@ function renderProducts(productsToRender) {
         `;
     productsGrid.appendChild(card);
   });
+}
+
+function getProductSalePrice(product) {
+  if (!product || typeof product.precio !== "number") {
+    return 0;
+  }
+
+  let precioFinal = Number(product.precio) || 0;
+  const descuento = Number(product.descuento || 0);
+
+  if (product.oferta || descuento > 0) {
+    const descPorcentaje = descuento > 0 ? descuento : 10;
+    precioFinal = precioFinal - precioFinal * (descPorcentaje / 100);
+  }
+
+  return Number(precioFinal.toFixed(2));
 }
 
 // 3. Filtrado por Categorías + Búsqueda inteligente
@@ -361,6 +378,14 @@ searchInput.addEventListener("input", (e) => updateSearch(e.target.value));
 searchInput.addEventListener("focus", (e) => {
   updateSearch(e.target.value);
 });
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === "Escape") {
+    hideSearchSuggestions();
+    if (e.key === "Escape") {
+      searchInput.blur();
+    }
+  }
+});
 
 searchSuggestions.addEventListener("click", (e) => {
   const item = e.target.closest(".suggestion-item");
@@ -376,6 +401,12 @@ searchSuggestions.addEventListener("click", (e) => {
 });
 
 document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-bar")) {
+    hideSearchSuggestions();
+  }
+});
+
+document.addEventListener("touchstart", (e) => {
   if (!e.target.closest(".search-bar")) {
     hideSearchSuggestions();
   }
@@ -412,7 +443,7 @@ function changeQty(id, delta) {
 }
 
 function updateCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart_casa_fresca", JSON.stringify(cart));
 
   const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
   cartCount.innerText = totalItems;
@@ -421,20 +452,23 @@ function updateCart() {
   let total = 0;
 
   cart.forEach((item) => {
-    const subtotal = item.precioVenta * item.qty;
+    const priceValue = Number(item.precioVenta ?? item.precio ?? 0);
+    const qty = Number(item.qty || 0);
+    const subtotal = priceValue * qty;
     total += subtotal;
+    const imageSrc = item.imagenes?.[0] || "";
 
     const cartItem = document.createElement("div");
     cartItem.className = "cart-item";
     cartItem.innerHTML = `
-            <img src="${productImageUrl(item.imagenes[0])}" alt="${item.nombre}" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+            <img src="${productImageUrl(imageSrc)}" alt="${item.nombre}" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
             <div style="flex-grow: 1; margin: 0 10px;">
                 <h4 style="font-size:0.9rem; color: var(--text-dark);">${item.nombre}</h4>
-                <p style="color: var(--primary-red); font-weight: bold;">$${item.precioVenta.toFixed(2)}</p>
+                <p style="color: var(--primary-red); font-weight: bold;">$${priceValue.toFixed(2)}</p>
             </div>
             <div class="qty-controls">
                 <button onclick="changeQty('${item.id}', -1)">-</button>
-                <span>${item.qty}</span>
+                <span>${qty}</span>
                 <button onclick="changeQty('${item.id}', 1)">+</button>
             </div>
         `;
@@ -444,10 +478,56 @@ function updateCart() {
   cartTotalPrice.innerText = total.toFixed(2);
 }
 
+function validateCartItems(savedCart) {
+  if (!Array.isArray(savedCart)) return [];
+
+  let hasChanges = false;
+  const cleaned = savedCart.reduce((acc, item) => {
+    if (!item || typeof item !== "object") {
+      hasChanges = true;
+      return acc;
+    }
+
+    const product = allProducts.find((p) => p.id === item.id);
+    if (!product || product.disponibilidad === false) {
+      hasChanges = true;
+      return acc;
+    }
+
+    const currentPrice = getProductSalePrice(product);
+    const quantity = Number(item.qty || 0);
+    if (quantity <= 0) {
+      hasChanges = true;
+      return acc;
+    }
+
+    const normalizedItem = { ...product, qty: quantity, precioVenta: currentPrice };
+    acc.push(normalizedItem);
+
+    if (Number(item.precioVenta) !== currentPrice) {
+      hasChanges = true;
+    }
+
+    return acc;
+  }, []);
+
+  if (hasChanges) {
+    localStorage.setItem("cart_casa_fresca", JSON.stringify(cleaned));
+  }
+
+  return cleaned;
+}
+
 function loadCartFromStorage() {
-  const savedCart = localStorage.getItem("cart");
+  const savedCart = localStorage.getItem("cart_casa_fresca");
   if (savedCart) {
-    cart = JSON.parse(savedCart);
+    try {
+      const parsedCart = JSON.parse(savedCart);
+      cart = validateCartItems(parsedCart);
+    } catch (error) {
+      console.warn("Carrito en localStorage inválido, se reestablece:", error);
+      cart = [];
+    }
     updateCart();
   }
 }
@@ -843,150 +923,5 @@ function openWhatsapp() {
 }
 
 // ============ FUNCIONES DE DESCARGA DE APP ============
+// Eliminadas porque la app móvil ya no se va a usar.
 
-/**
- * Detecta el sistema operativo del usuario
- */
-function detectOS() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  
-  if (/android/i.test(userAgent)) {
-    return 'Android';
-  }
-  if (/iPad|iPhone|iPod/.test(userAgent)) {
-    return 'iOS';
-  }
-  if (/Windows NT|Win32/.test(userAgent)) {
-    return 'Windows';
-  }
-  if (/Macintosh|MacIntel|MacPPC|Mac68K/.test(userAgent)) {
-    return 'Mac';
-  }
-  if (/Linux|X11/.test(userAgent)) {
-    return 'Linux';
-  }
-  return 'Unknown';
-}
-
-/**
- * Oculta/muestra elementos según el SO
- */
-function initializeOSDetection() {
-  const os = detectOS();
-  const downloadHeaderBtn = document.getElementById("downloadAppHeaderBtn");
-  const downloadBanner = document.querySelector(".app-download-banner");
-  
-  // Solo mostrar en Android
-  if (os !== 'Android') {
-    if (downloadHeaderBtn) downloadHeaderBtn.style.display = "none";
-    if (downloadBanner) downloadBanner.style.display = "none";
-  }
-}
-
-/**
- * Abre el modal de descarga de app
- */
-function openAppDownloadModal() {
-  const os = detectOS();
-  
-  // Si no es Android, mostrar mensaje
-  if (os !== 'Android') {
-    alert('Esta aplicación solo está disponible para Android.\n\nPuedes seguir usando nuestra tienda web desde cualquier dispositivo.');
-    return;
-  }
-  
-  const modal = document.getElementById("appDownloadModal");
-  if (modal) {
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-    lockBodyScroll();
-  }
-}
-
-/**
- * Cierra el modal de descarga de app
- */
-function closeAppDownloadModal() {
-  const modal = document.getElementById("appDownloadModal");
-  if (modal) {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-    unlockBodyScroll();
-  }
-}
-
-/**
- * Dispara la descarga del APK
- */
-function triggerAppDownload() {
-  const os = detectOS();
-  
-  // Validar que sea Android
-  if (os !== 'Android') {
-    alert('La descarga de APK solo está disponible en dispositivos Android.');
-    return;
-  }
-  
-  // Crear un elemento anchor temporal para descargar
-  const link = document.createElement("a");
-  link.href = "/app/app-debug.apk";
-  link.download = "CasaFresca.apk";
-  link.style.display = "none";
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  // Cerrar modal después de iniciar descarga
-  setTimeout(() => {
-    closeAppDownloadModal();
-  }, 500);
-  
-  // Registrar descargas (opcional - para analytics)
-  console.log("📱 Descarga de app iniciada:", new Date().toLocaleString(), "OS:", os);
-}
-
-/**
- * Alias para triggerAppDownload (llamada desde el botón)
- */
-function downloadApp() {
-  triggerAppDownload();
-}
-
-// Inicializar event listeners para botones de descarga
-document.addEventListener("DOMContentLoaded", () => {
-  // Inicializar detección de SO
-  initializeOSDetection();
-  
-  // Botón de descarga en el header
-  const downloadAppHeaderBtn = document.getElementById("downloadAppHeaderBtn");
-  if (downloadAppHeaderBtn) {
-    downloadAppHeaderBtn.addEventListener("click", openAppDownloadModal);
-  }
-  
-  // Botón de descarga del banner
-  const downloadBannerBtn = document.querySelector(".btn-download-app");
-  if (downloadBannerBtn) {
-    downloadBannerBtn.addEventListener("click", openAppDownloadModal);
-  }
-  
-  // Cerrar modal cuando se clickea fuera
-  const appDownloadModal = document.getElementById("appDownloadModal");
-  if (appDownloadModal) {
-    appDownloadModal.addEventListener("click", (e) => {
-      if (e.target === appDownloadModal) {
-        closeAppDownloadModal();
-      }
-    });
-  }
-  
-  // Cerrar modal cuando se presiona Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      const modal = document.getElementById("appDownloadModal");
-      if (modal && modal.classList.contains("open")) {
-        closeAppDownloadModal();
-      }
-    }
-  });
-});

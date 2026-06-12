@@ -1,4 +1,5 @@
 const BACKEND = 'https://backend-casafresca.onrender.com';
+const CART_STORAGE_KEY = 'cart_casa_fresca';
 
 // Keys para guardar datos de cliente en localStorage
 const CUSTOMER_INFO_KEY = 'casafresca_customer_info';
@@ -87,17 +88,20 @@ function initializePaymentSystem() {
 
 // Función puente: Cierra el carrito y abre el formulario
 function openPaymentFromCart() {
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    if (cartItems.length === 0) {
-        showPaymentNotification('Añade productos al carrito primero', 'error');
+    if (!validateCartBeforeCheckout()) {
         return;
     }
+
     // Llama a la función que ya existe en tu app.js
     if (typeof closeCartDrawer === 'function') closeCartDrawer(); 
     showPaymentSection();
 }
 
 function showPaymentSection() {
+    if (!validateCartBeforeCheckout()) {
+        return;
+    }
+
     const paymentSection = document.getElementById('payment-section');
     if (!paymentSection) return;
 
@@ -137,7 +141,7 @@ function hidePaymentSection() {
 function updateOrderSummary() {
     const orderSummary = document.getElementById('summary-items');
     const paymentTotal = document.getElementById('payment-total');
-    const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const currentCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
     
     let total = 0;
 
@@ -182,7 +186,11 @@ async function processPayment(e) {
     const loadingNotification = showPaymentNotification('Procesando tu pedido...', 'loading');
 
     try {
-        const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (!validateCartBeforeCheckout()) {
+            throw new Error('Carrito inválido. Revisa los productos antes de intentar pagar.');
+        }
+
+        const currentCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
         if (currentCart.length === 0) {
             throw new Error('Tu carrito está vacío');
         }
@@ -281,7 +289,7 @@ async function sendPaymentToServer(orderPayload) {
 
 // Función para vaciar el carrito conectándose con app.js
 function clearCartData() {
-    localStorage.removeItem('cart');
+    localStorage.removeItem(CART_STORAGE_KEY);
     // Si cart es global en app.js, lo reseteamos:
     if (typeof cart !== 'undefined') cart.length = 0; 
     if (typeof updateCart === 'function') updateCart();
@@ -564,12 +572,95 @@ function injectPaymentStyles() {
     document.head.appendChild(style);
 }
 
+function getCurrentProductSalePrice(product) {
+    if (!product || typeof product.precio !== 'number') {
+        return 0;
+    }
+
+    let precioFinal = Number(product.precio) || 0;
+    const descuento = Number(product.descuento || 0);
+
+    if (product.oferta || descuento > 0) {
+        const descPorcentaje = descuento > 0 ? descuento : 10;
+        precioFinal = precioFinal - precioFinal * (descPorcentaje / 100);
+    }
+
+    return Number(precioFinal.toFixed(2));
+}
+
 function validateCartBeforeCheckout() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    if (cart.length === 0) {
+    const rawCart = localStorage.getItem(CART_STORAGE_KEY) || '[]';
+    let cartItems = [];
+
+    try {
+        cartItems = JSON.parse(rawCart);
+    } catch (error) {
+        cartItems = [];
+    }
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
         showPaymentNotification('Añade productos al carrito primero', 'error');
         return false;
     }
+
+    if (!Array.isArray(allProducts) || allProducts.length === 0) {
+        showPaymentNotification('Los productos no están disponibles en este momento.', 'error');
+        return false;
+    }
+
+    let hasRemovedItems = false;
+    let hasPriceChanges = false;
+    const cleanedCart = cartItems.reduce((acc, item) => {
+        if (!item || typeof item !== 'object') {
+            hasRemovedItems = true;
+            return acc;
+        }
+
+        const product = allProducts.find((p) => p.id === item.id);
+        if (!product || product.disponibilidad === false) {
+            hasRemovedItems = true;
+            return acc;
+        }
+
+        const currentPrice = getCurrentProductSalePrice(product);
+        const quantity = Number(item.qty || 0);
+        if (quantity <= 0) {
+            hasRemovedItems = true;
+            return acc;
+        }
+
+        const normalizedItem = { ...product, qty: quantity, precioVenta: currentPrice };
+        acc.push(normalizedItem);
+
+        if (Number(item.precioVenta) !== currentPrice) {
+            hasPriceChanges = true;
+        }
+
+        return acc;
+    }, []);
+
+    if (hasRemovedItems || hasPriceChanges) {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cleanedCart));
+        if (typeof cart !== 'undefined') cart = cleanedCart;
+        if (typeof updateCart === 'function') updateCart();
+        if (typeof updateOrderSummary === 'function') updateOrderSummary();
+    }
+
+    if (cleanedCart.length === 0) {
+        showPaymentNotification('Tu carrito ya no contiene productos válidos para comprar.', 'error');
+        return false;
+    }
+
+    if (hasRemovedItems) {
+        showPaymentNotification('Algunos productos no están disponibles y se han quitado del carrito.', 'error');
+        return false;
+    }
+
+    if (hasPriceChanges) {
+        showPaymentNotification('Los precios del carrito cambiaron. Revisa el resumen antes de confirmar.', 'error');
+        return false;
+    }
+
     return true;
 }
 
