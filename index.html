@@ -77,12 +77,43 @@
             </div>
         </header>
 
-        <section class="hero">
-            <div class="hero-overlay">
-                <h1>Bienvenido a<br>Casa Fresca</h1>
-                <button class="btn-outline-white"
-                    onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">ENTRAR
-                    A LA TIENDA</button>
+        <section class="hero hero-slider" id="heroSlider">
+            <div class="slider-container">
+                <div class="slider-slide slide-1 active">
+                    <div class="slider-gradient"></div>
+                    <div class="hero-overlay">
+                        <h1>Casa Fresca<br><span class="slide-subtitle">Calidad y frescura que inspiran confianza</span></h1>
+                        <button class="btn-slider"
+                            onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">EXPLORAR PRODUCTOS</button>
+                    </div>
+                </div>
+                <div class="slider-slide slide-2">
+                    <div class="slider-gradient"></div>
+                    <div class="hero-overlay">
+                        <h1>Casa Fresca<br><span class="slide-subtitle">El sabor del hogar, siempre a tu alcance</span></h1>
+                        <button class="btn-slider"
+                            onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">EXPLORAR PRODUCTOS</button>
+                    </div>
+                </div>
+                <div class="slider-slide slide-3">
+                    <div class="slider-gradient"></div>
+                    <div class="hero-overlay">
+                        <h1>Casa Fresca<br><span class="slide-subtitle">Compromiso, frescura y el mejor servicio</span></h1>
+                        <button class="btn-slider"
+                            onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">EXPLORAR PRODUCTOS</button>
+                    </div>
+                </div>
+            </div>
+            <button class="slider-arrow slider-arrow--prev" id="sliderPrev" aria-label="Anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-arrow slider-arrow--next" id="sliderNext" aria-label="Siguiente">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="slider-dots" id="sliderDots">
+                <span class="dot active" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
             </div>
         </section>
 

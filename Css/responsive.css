@@ -28,6 +28,64 @@
     }
 }
 
+/* Slider responsive - tablet */
+@media (max-width: 900px) {
+    .hero-slider {
+        height: 50vh;
+        min-height: 340px;
+        max-height: 450px;
+    }
+
+    .hero-overlay {
+        padding: 10px 15px;
+        width: min(80%, 520px);
+    }
+
+    .hero-overlay h1 {
+        font-size: 2rem;
+        margin-bottom: 12px;
+    }
+
+    .slide-subtitle {
+        font-size: 1rem;
+        margin-top: 6px;
+    }
+
+    .btn-slider {
+        margin-top: 20px;
+        padding: 12px 28px;
+        font-size: 0.9rem;
+    }
+
+    .slider-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .slider-arrow--prev {
+        left: 12px;
+    }
+
+    .slider-arrow--next {
+        right: 12px;
+    }
+
+    .slider-dots {
+        bottom: 15px;
+        gap: 8px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .dot.active {
+        width: 22px;
+    }
+}
+
 /* 2 FILAS EN MÓVILES */
 @media (max-width: 600px) {
     .nav-container {
@@ -38,8 +96,24 @@
         flex-grow: 1;
         margin: 0 10px;
     }
+    .hero-slider {
+        height: 30vh;
+        min-height: 260px;
+        max-height: 350px;
+    }
     .hero-overlay h1 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
+    }
+    .slide-subtitle {
+        font-size: 0.85rem;
+    }
+    .btn-slider {
+        margin-top: 16px;
+        padding: 10px 22px;
+        font-size: 0.8rem;
+    }
+    .slider-arrow {
+        display: none; /* Ocultar flechas en móviles */
     }
     
     /* MAGIA PARA 2 COLUMNAS EXACTAS */
@@ -75,4 +149,3 @@
         width: 100%;
     }
 }
-

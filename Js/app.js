@@ -81,13 +81,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchProducts();
   loadCartFromStorage();
 
-  // ANIMACIÓN: mostrar hero-overlay con efecto al cargar
-  const heroOverlay = document.querySelector(".hero-overlay");
-  if (heroOverlay) {
-    requestAnimationFrame(() => {
-      heroOverlay.classList.add("animate-in");
-    });
-  }
+  // INICIALIZAR SLIDER
+  initSlider();
 
   // NUEVA LÓGICA: Leer el hash que envía el backend
   const hash = window.location.hash.substring(1);
@@ -920,6 +915,86 @@ function openWhatsapp() {
   const message = encodeURIComponent("Hola, estoy interesado en sus productos. ¿Podrían brindarme más información?");
   const url = `https://wa.me/${phoneNumber}?text=${message}`;
   window.open(url, "_blank");
+}
+
+// ============ SLIDER HERO ============
+let sliderInterval = null;
+const SLIDER_INTERVAL_MS = 5000; // 5 segundos entre slides
+
+function initSlider() {
+  const slides = document.querySelectorAll(".slider-slide");
+  const dots = document.querySelectorAll(".dot");
+  if (!slides.length || !dots.length) return;
+
+  let currentSlide = 0;
+  const totalSlides = slides.length;
+
+  function goToSlide(index) {
+    // Quitar active de todos
+    slides.forEach((s) => s.classList.remove("active"));
+    dots.forEach((d) => d.classList.remove("active"));
+
+    // Poner active en el índice deseado
+    currentSlide = (index + totalSlides) % totalSlides;
+    slides[currentSlide].classList.add("active");
+    dots[currentSlide].classList.add("active");
+  }
+
+  function nextSlide() {
+    goToSlide(currentSlide + 1);
+  }
+
+  function startAutoPlay() {
+    stopAutoPlay();
+    sliderInterval = setInterval(nextSlide, SLIDER_INTERVAL_MS);
+  }
+
+  function stopAutoPlay() {
+    if (sliderInterval) {
+      clearInterval(sliderInterval);
+      sliderInterval = null;
+    }
+  }
+
+  // Click en dots
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const slideIndex = parseInt(dot.getAttribute("data-slide"), 10);
+      goToSlide(slideIndex);
+      startAutoPlay();
+    });
+  });
+
+  // Flechas de navegación
+  const prevBtn = document.getElementById("sliderPrev");
+  const nextBtn = document.getElementById("sliderNext");
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      goToSlide(currentSlide - 1);
+      startAutoPlay();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      goToSlide(currentSlide + 1);
+      startAutoPlay();
+    });
+  }
+
+  // Pausar al hacer hover sobre el slider
+  const slider = document.getElementById("heroSlider");
+  if (slider) {
+    slider.addEventListener("mouseenter", stopAutoPlay);
+    slider.addEventListener("mouseleave", startAutoPlay);
+    // Para móviles: pausar al tocar
+    slider.addEventListener("touchstart", stopAutoPlay, { passive: true });
+    slider.addEventListener("touchend", startAutoPlay);
+  }
+
+  // Iniciar autoplay
+  startAutoPlay();
 }
 
 // ============ FUNCIONES DE DESCARGA DE APP ============
