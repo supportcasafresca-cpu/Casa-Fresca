@@ -108,6 +108,8 @@ async function fetchProducts() {
 
     renderCategories(allProducts);
     renderProducts(allProducts);
+    renderBestSellers();
+    renderOffers();
 
     // LÓGICA DE REDIRECCIÓN (Para que funcione el link del backend)
     // Al terminar de cargar, revisamos si hay un ID en el hash (ej: #prod_001)
@@ -179,6 +181,126 @@ function getProductSalePrice(product) {
   }
 
   return Number(precioFinal.toFixed(2));
+}
+
+// 2.b Panel "Los Más Vendidos" (estilo Amazon)
+function renderBestSellers() {
+  const section = document.getElementById("bestSellersSection");
+  const grid = document.getElementById("bestSellersGrid");
+  if (!section || !grid) return;
+
+  const bestSellers = allProducts.filter(
+    (p) => p.mas_vendido && p.disponibilidad !== false,
+  );
+
+  if (bestSellers.length === 0) {
+    section.classList.add("hidden");
+    grid.innerHTML = "";
+    return;
+  }
+
+  section.classList.remove("hidden");
+  grid.innerHTML = bestSellers
+    .map((prod) => {
+      const precioFinal = getProductSalePrice(prod);
+      const tieneDescuento = prod.oferta || prod.descuento > 0;
+      const precioHtml = tieneDescuento
+        ? `<span class="old-price">$${prod.precio.toFixed(2)}</span> $${precioFinal.toFixed(2)}`
+        : `$${precioFinal.toFixed(2)}`;
+      const imageSrc = prod.imagenes?.[0] || "";
+      return `
+        <div class="product-card">
+          <div class="badge-bestseller"><i class="fas fa-crown"></i> Más vendido</div>
+          <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          <div class="product-category">${prod.categoria}</div>
+          <h3 class="product-title">${prod.nombre}</h3>
+          <div class="product-price">${precioHtml}</div>
+          <button class="btn-add-cart" onclick="addToCart('${prod.id}', ${precioFinal})">AÑADIR AL CARRITO</button>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+// 2.c Panel "Ofertas por Tiempo Limitado" con cuenta regresiva
+const OFFER_DEADLINE_KEY_PREFIX = "cf_offer_deadline_";
+let offersCountdownInterval = null;
+
+function getOfferDeadline(id) {
+  const key = OFFER_DEADLINE_KEY_PREFIX + id;
+  const now = Date.now();
+  let deadline = Number(localStorage.getItem(key));
+
+  if (!deadline || Number.isNaN(deadline) || deadline <= now) {
+    // Genera una nueva ventana de oferta entre 3 y 24 horas para mantener la urgencia
+    const hoursFromNow = 3 + Math.random() * 21;
+    deadline = now + hoursFromNow * 60 * 60 * 1000;
+    localStorage.setItem(key, String(deadline));
+  }
+
+  return deadline;
+}
+
+function formatCountdown(msRemaining) {
+  const total = Math.max(0, Math.floor(msRemaining / 1000));
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const seconds = total % 60;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+function startOffersCountdown() {
+  if (offersCountdownInterval) clearInterval(offersCountdownInterval);
+
+  offersCountdownInterval = setInterval(() => {
+    document.querySelectorAll(".countdown-time").forEach((el) => {
+      const id = el.dataset.productId;
+      if (!id) return;
+      const deadline = getOfferDeadline(id);
+      const remaining = deadline - Date.now();
+      el.textContent = formatCountdown(remaining);
+    });
+  }, 1000);
+}
+
+function renderOffers() {
+  const section = document.getElementById("offersSection");
+  const grid = document.getElementById("offersGrid");
+  if (!section || !grid) return;
+
+  const offers = allProducts.filter(
+    (p) => (p.oferta || p.descuento > 0) && p.disponibilidad !== false,
+  );
+
+  if (offers.length === 0) {
+    section.classList.add("hidden");
+    grid.innerHTML = "";
+    return;
+  }
+
+  section.classList.remove("hidden");
+  grid.innerHTML = offers
+    .map((prod) => {
+      const descPorcentaje = prod.descuento > 0 ? prod.descuento : 10;
+      const precioFinal = getProductSalePrice(prod);
+      const imageSrc = prod.imagenes?.[0] || "";
+      const deadline = getOfferDeadline(prod.id);
+      return `
+        <div class="product-card">
+          <div class="badge-oferta">-${descPorcentaje}%</div>
+          <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          <div class="product-category">${prod.categoria}</div>
+          <h3 class="product-title">${prod.nombre}</h3>
+          <div class="deal-countdown"><i class="fas fa-clock"></i> Termina en: <span class="countdown-time" data-product-id="${prod.id}">${formatCountdown(deadline - Date.now())}</span></div>
+          <div class="product-price"><span class="old-price">$${prod.precio.toFixed(2)}</span> $${precioFinal.toFixed(2)}</div>
+          <button class="btn-add-cart" onclick="addToCart('${prod.id}', ${precioFinal})">AÑADIR AL CARRITO</button>
+        </div>
+      `;
+    })
+    .join("");
+
+  startOffersCountdown();
 }
 
 // 3. Filtrado por Categorías + Búsqueda inteligente
@@ -909,6 +1031,32 @@ window.addEventListener("click", (e) => {
   if (e.target === cartModal) closeCartDrawer();
   if (e.target === productDrawerOverlay) hideProductDetail();
 });
+
+// Flechas de los carruseles de "Ofertas" y "Más vendidos"
+document.querySelectorAll(".carousel-arrow").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const targetId = btn.getAttribute("data-target");
+    const grid = document.getElementById(targetId);
+    if (!grid) return;
+    const scrollAmount = grid.clientWidth * 0.85;
+    grid.scrollBy({
+      left: btn.classList.contains("carousel-arrow--next")
+        ? scrollAmount
+        : -scrollAmount,
+      behavior: "smooth",
+    });
+  });
+});
+
+// Botón de menú (móvil): lleva directamente a las categorías
+const menuIcon = document.querySelector(".menu-icon");
+if (menuIcon) {
+  menuIcon.addEventListener("click", () => {
+    document
+      .querySelector(".categories-section")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
 
 function openWhatsapp() {
   const phoneNumber = "+5363001537";

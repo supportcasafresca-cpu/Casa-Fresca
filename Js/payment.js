@@ -105,6 +105,7 @@ function showPaymentSection() {
     const paymentSection = document.getElementById('payment-section');
     if (!paymentSection) return;
 
+    paymentSection.classList.remove('hidden');
     paymentSection.classList.add('active');
     if (typeof lockBodyScroll === 'function') lockBodyScroll();
     createPaymentOverlay();
@@ -131,6 +132,7 @@ function hidePaymentSection() {
     const paymentSection = document.getElementById('payment-section');
     if (paymentSection) {
         paymentSection.classList.remove('active');
+        paymentSection.classList.add('hidden');
     }
 
     if (typeof unlockBodyScroll === 'function') unlockBodyScroll();

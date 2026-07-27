@@ -56,6 +56,9 @@
     <body>
 
         <header>
+            <div class="top-strip">
+                <p><i class="fas fa-truck"></i> Domicilio gratis en la ciudad · <i class="fas fa-box"></i> Entrega en 2 días · <i class="fas fa-hand-holding-usd"></i> Reciba y luego pague</p>
+            </div>
             <div class="nav-container">
                 <div class="menu-icon"><i class="fas fa-bars"></i></div>
                 <div class="logo" id="siteLogo" style="cursor: pointer;" tabindex="0" role="button" aria-label="Ir al inicio">Casa Fresca</div>
@@ -118,6 +121,31 @@
         </section>
 
         <main id="catalogo">
+
+            <section class="deals-section hidden" id="offersSection">
+                <div class="deals-heading">
+                    <h2 class="section-title deals-title"><i class="fas fa-bolt"></i> Ofertas por Tiempo Limitado</h2>
+                    <span class="deals-heading-sub">¡Aprovecha antes de que se acaben!</span>
+                </div>
+                <div class="carousel-wrap">
+                    <button class="carousel-arrow carousel-arrow--prev" data-target="offersGrid" aria-label="Ver ofertas anteriores"><i class="fas fa-chevron-left"></i></button>
+                    <div class="deals-grid" id="offersGrid"></div>
+                    <button class="carousel-arrow carousel-arrow--next" data-target="offersGrid" aria-label="Ver más ofertas"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="bestsellers-section hidden" id="bestSellersSection">
+                <div class="deals-heading">
+                    <h2 class="section-title bestsellers-title"><i class="fas fa-crown"></i> Los Más Vendidos</h2>
+                    <span class="deals-heading-sub">Los favoritos de nuestros clientes</span>
+                </div>
+                <div class="carousel-wrap">
+                    <button class="carousel-arrow carousel-arrow--prev" data-target="bestSellersGrid" aria-label="Ver anteriores"><i class="fas fa-chevron-left"></i></button>
+                    <div class="deals-grid" id="bestSellersGrid"></div>
+                    <button class="carousel-arrow carousel-arrow--next" data-target="bestSellersGrid" aria-label="Ver más"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
             <div class="store-layout">
 
                 <aside class="categories-section">

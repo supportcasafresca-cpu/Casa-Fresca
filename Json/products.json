@@ -6,7 +6,7 @@
       "categoria": "Bebidas no alcohólicas",
       "precio": 0.17,
       "descuento": 0,
-      "mas_vendido": false,
+      "mas_vendido": true,
       "nuevo": true,
       "oferta": false,
       "imagenes": [
@@ -23,7 +23,7 @@
       "categoria": "Cárnicos y Embutidos",
       "precio": 2.9,
       "descuento": 0,
-      "mas_vendido": false,
+      "mas_vendido": true,
       "nuevo": false,
       "oferta": false,
       "imagenes": [
@@ -40,7 +40,7 @@
       "categoria": "Despensa",
       "precio": 1.17,
       "descuento": 0,
-      "mas_vendido": false,
+      "mas_vendido": true,
       "nuevo": false,
       "oferta": false,
       "imagenes": [
@@ -57,7 +57,7 @@
       "categoria": "Viandas y Verduras",
       "precio": 0.31,
       "descuento": 0,
-      "mas_vendido": false,
+      "mas_vendido": true,
       "nuevo": false,
       "oferta": false,
       "imagenes": [
@@ -73,10 +73,10 @@
       "nombre": "Chupa Chupa x unidad",
       "categoria": "Confitura",
       "precio": 0.2,
-      "descuento": 0,
+      "descuento": 5,
       "mas_vendido": false,
       "nuevo": false,
-      "oferta": false,
+      "oferta": true,
       "imagenes": [
         "Chupa Chupa x unidad.jpg"
       ],
@@ -90,10 +90,10 @@
       "nombre": "Carne de ovejo x lb",
       "categoria": "Cárnicos y Embutidos",
       "precio": 2.14,
-      "descuento": 0,
+      "descuento": 10,
       "mas_vendido": false,
       "nuevo": false,
-      "oferta": false,
+      "oferta": true,
       "imagenes": [
         "Carne de ovejo x lb.jpg"
       ],
@@ -107,10 +107,10 @@
       "nombre": "Espaguetis (500g)",
       "categoria": "Despensa",
       "precio": 0.87,
-      "descuento": 0,
+      "descuento": 14,
       "mas_vendido": false,
       "nuevo": false,
-      "oferta": false,
+      "oferta": true,
       "imagenes": [
         "Espaguetis (500g).jpg"
       ],
@@ -124,10 +124,10 @@
       "nombre": "Azúcar Parda x lb",
       "categoria": "Despensa",
       "precio": 1.33,
-      "descuento": 0,
+      "descuento": 15,
       "mas_vendido": false,
       "nuevo": false,
-      "oferta": false,
+      "oferta": true,
       "imagenes": [
         "Azúcar Parda x lb.jpg"
       ],
