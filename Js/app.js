@@ -62,6 +62,11 @@ const productDetailContainer = document.getElementById(
   "productDetailContainer",
 );
 
+const categoryDrawerOverlay = document.getElementById("categoryDrawerOverlay");
+const categoryDrawer = document.getElementById("categoryDrawer");
+const closeCategoryDrawerBtn = document.getElementById("closeCategoryDrawerBtn");
+const categoryListDrawer = document.getElementById("categoryListDrawer");
+
 // Rutas y fallback para imágenes de productos
 const IMAGE_BASE_PATH = "/Img/products/";
 const IMAGE_FALLBACK =
@@ -328,21 +333,56 @@ function getUniqueCategories(products) {
   ];
 }
 
+// Mapa de iconos para categorías (estilo Amazon)
+const CATEGORY_ICONS = {
+  "Bebidas no alcohólicas": "fa-wine-bottle",
+  "Bebidas alcohólicas": "fa-wine-glass-alt",
+  "Cárnicos y Embutidos": "fa-drumstick-bite",
+  "Despensa": "fa-boxes",
+  "Viandas y Verduras": "fa-carrot",
+  "Confitura": "fa-candy-cane",
+  "Lácteos": "fa-cheese",
+  "Utiles del Hogar": "fa-broom",
+  "Aseo y Belleza": "fa-soap",
+  "Aderezos": "fa-flask",
+};
+
+function getCategoryIcon(category) {
+  return CATEGORY_ICONS[category] || "fa-tag";
+}
+
 function renderCategories(products) {
   const categories = getUniqueCategories(products);
   categoryList.innerHTML = "";
+  if (categoryListDrawer) categoryListDrawer.innerHTML = "";
 
+  // "Ver Todo" para sidebar normal
   const allItem = document.createElement("li");
   allItem.dataset.category = "all";
   allItem.className = "active";
   allItem.textContent = "Ver Todo";
   categoryList.appendChild(allItem);
 
+  // "Ver Todo" para drawer - con icono
+  const allItemDrawer = document.createElement("li");
+  allItemDrawer.dataset.category = "all";
+  allItemDrawer.className = "active";
+  allItemDrawer.innerHTML = '<i class="fas fa-th-large"></i> Ver Todo';
+  categoryListDrawer.appendChild(allItemDrawer);
+
   categories.forEach((category) => {
+    // Sidebar normal (sin icono)
     const li = document.createElement("li");
     li.dataset.category = category;
     li.textContent = category;
     categoryList.appendChild(li);
+
+    // Drawer con icono
+    const liDrawer = document.createElement("li");
+    liDrawer.dataset.category = category;
+    const iconClass = getCategoryIcon(category);
+    liDrawer.innerHTML = `<i class="fas ${iconClass}"></i> ${category}`;
+    categoryListDrawer.appendChild(liDrawer);
   });
 }
 
@@ -393,12 +433,55 @@ function getMatchScore(query, text) {
   return distance <= 2 ? Math.max(0, 90 - distance * 30) : 0;
 }
 
+// ============ ROTACIÓN DIARIA (orden consistente durante el día) ============
+// Genera una semilla numérica a partir de un texto (fecha del día)
+function hashStringToSeed(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash >>> 0;
+}
+
+// Generador pseudoaleatorio determinista (mulberry32)
+function createSeededRandom(seed) {
+  let state = seed;
+  return function () {
+    state |= 0;
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Baraja un arreglo de forma determinista según una semilla de texto
+function seededShuffle(array, seedText) {
+  const result = array.slice();
+  const random = createSeededRandom(hashStringToSeed(seedText));
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+// Aplica un orden que cambia cada día calendario, pero se mantiene fijo
+// durante ese mismo día (no cambia al recargar la página).
+function applyDailyOrder(products, salt = "") {
+  const todaySeed = new Date().toDateString() + salt;
+  return seededShuffle(products, todaySeed);
+}
+
 function getCategoryProducts() {
   const filtered = currentCategory === "all"
     ? allProducts
     : allProducts.filter((p) => p.categoria === currentCategory);
   // Filtrar solo productos disponibles
-  return filtered.filter((p) => p.disponibilidad !== false);
+  const available = filtered.filter((p) => p.disponibilidad !== false);
+  // Orden con rotación diaria (misma categoría = mismo orden todo el día)
+  return applyDailyOrder(available, currentCategory);
 }
 
 function getSearchResults(query) {
@@ -490,6 +573,44 @@ categoryList.addEventListener("click", (e) => {
     navigateToCategory(selectedCategory);
   }
 });
+
+// 3.b Drawer lateral de Categorías (menú hamburguesa)
+function openCategoryDrawer() {
+  categoryDrawerOverlay.classList.add("open");
+  categoryDrawer.classList.add("open");
+  categoryDrawerOverlay.setAttribute("aria-hidden", "false");
+  lockBodyScroll();
+}
+
+function closeCategoryDrawer() {
+  categoryDrawer.classList.remove("open");
+  categoryDrawerOverlay.classList.remove("open");
+  categoryDrawerOverlay.setAttribute("aria-hidden", "true");
+  unlockBodyScroll();
+}
+
+if (categoryListDrawer) {
+  categoryListDrawer.addEventListener("click", (e) => {
+    const li = e.target.closest("li");
+    if (li) {
+      const selectedCategory = li.getAttribute("data-category");
+      if (selectedCategory) {
+        navigateToCategory(selectedCategory);
+        closeCategoryDrawer();
+      }
+    }
+  });
+}
+
+if (closeCategoryDrawerBtn) {
+  closeCategoryDrawerBtn.addEventListener("click", closeCategoryDrawer);
+}
+
+if (categoryDrawerOverlay) {
+  categoryDrawerOverlay.addEventListener("click", (e) => {
+    if (e.target === categoryDrawerOverlay) closeCategoryDrawer();
+  });
+}
 
 searchInput.addEventListener("input", (e) => updateSearch(e.target.value));
 searchInput.addEventListener("focus", (e) => {
@@ -728,7 +849,7 @@ function findProductByIdOrName(term) {
 }
 
 function setActiveCategoryUI(category) {
-  document.querySelectorAll(".category-list li").forEach((li) => {
+  document.querySelectorAll(".category-list li, .drawer-category-list li").forEach((li) => {
     li.classList.toggle(
       "active",
       li.getAttribute("data-category") === category,
@@ -830,6 +951,7 @@ function initRouter() {
 function goToHome() {
   // Cerrar modales/drawers abiertos
   if (typeof closeCartDrawer === "function") closeCartDrawer();
+  if (typeof closeCategoryDrawer === "function") closeCategoryDrawer();
   if (typeof hideProductDetail === "function") hideProductDetail({ fromPopState: true });
   if (typeof hidePaymentSection === "function") hidePaymentSection();
 
@@ -917,9 +1039,11 @@ function showProductDetail(
   ].join('');
 
   // Obtener productos relacionados (misma categoría, excluyendo el actual)
-  const relatedProducts = allProducts
-    .filter(p => p.categoria === prod.categoria && p.id !== prod.id)
-    .slice(0, 6);
+  // con rotación diaria para variar las recomendaciones cada día
+  const relatedPool = allProducts.filter(
+    (p) => p.categoria === prod.categoria && p.id !== prod.id && p.disponibilidad !== false,
+  );
+  const relatedProducts = applyDailyOrder(relatedPool, `related_${prod.id}`).slice(0, 6);
   
   const relatedProductsHTML = relatedProducts
     .map(p => {
@@ -1048,14 +1172,25 @@ document.querySelectorAll(".carousel-arrow").forEach((btn) => {
   });
 });
 
-// Botón de menú (móvil): lleva directamente a las categorías
+// Botón de menú (móvil): abre el panel lateral de categorías
 const menuIcon = document.querySelector(".menu-icon");
 if (menuIcon) {
-  menuIcon.addEventListener("click", () => {
-    document
-      .querySelector(".categories-section")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  menuIcon.setAttribute("role", "button");
+  menuIcon.setAttribute("tabindex", "0");
+  menuIcon.setAttribute("aria-label", "Abrir categorías");
+  menuIcon.addEventListener("click", () => openCategoryDrawer());
+  menuIcon.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openCategoryDrawer();
+    }
   });
+}
+
+// Enlace "Mi carrito" en el footer
+const openCartFooterLink = document.getElementById("openCartFooterLink");
+if (openCartFooterLink) {
+  openCartFooterLink.addEventListener("click", () => openCartDrawer());
 }
 
 function openWhatsapp() {

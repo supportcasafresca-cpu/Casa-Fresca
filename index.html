@@ -183,14 +183,39 @@
         </main>
 
         <footer>
-            <p>Copyright © 2026</p>
-            <p>casa-fresca.onrender.com</p>
-            <div class="socials">
-                <i class="fab fa-facebook-square"></i>
-                <i class="fab fa-instagram"></i>
-                <i class="fab fa-whatsapp" onclick="openWhatsapp()"></i>
+            <div class="footer-back-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <span>Volver arriba</span>
             </div>
-            <p><small>Powered by HLab</small></p>
+            <div class="footer-columns">
+                <div class="footer-col">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li onclick="openWhatsapp()">Contáctanos</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Enlaces rápidos</h4>
+                    <ul>
+                        <li onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">Catálogo</li>
+                        <li onclick="document.getElementById('offersSection').scrollIntoView({behavior:'smooth'})">Ofertas</li>
+                        <li onclick="document.getElementById('bestSellersSection').scrollIntoView({behavior:'smooth'})">Más vendidos</li>
+                        <li id="openCartFooterLink">Mi carrito</li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-col--brand">
+                    <h4>Casa Fresca</h4>
+                    <p class="footer-tagline">Calidad y frescura para tu hogar, todos los días.</p>
+                    <div class="socials">
+                        <i class="fab fa-facebook-square" title="Facebook"></i>
+                        <i class="fab fa-instagram" title="Instagram"></i>
+                        <i class="fab fa-whatsapp" onclick="openWhatsapp()" title="WhatsApp"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright © 2026 Casa Fresca · casa-fresca.onrender.com</p>
+                <p><small>Powered by HLab</small></p>
+            </div>
         </footer>
         <div id="product-detail-page" class="product-detail-page"></div>
 
@@ -222,6 +247,18 @@
                 </header>
                 <div class="product-detail-body"
                     id="productDetailContainer"></div>
+            </aside>
+        </div>
+
+        <div class="drawer-overlay drawer-overlay--left" id="categoryDrawerOverlay" aria-hidden="true">
+            <aside class="drawer category-drawer" id="categoryDrawer"
+                role="dialog" aria-label="Categorías">
+                <header class="drawer-header">
+                    <h2 style="color: var(--primary-red);"><i class="fas fa-th-large"></i> Categorías</h2>
+                    <button class="close-modal" id="closeCategoryDrawerBtn"
+                        aria-label="Cerrar categorías">&times;</button>
+                </header>
+                <ul class="drawer-category-list" id="categoryListDrawer"></ul>
             </aside>
         </div>
 
