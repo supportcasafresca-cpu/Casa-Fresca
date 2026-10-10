@@ -1,0 +1,34 @@
+{
+  "iban_countries": [
+    "Alemania",
+    "Andorra",
+    "Austria",
+    "Bélgica",
+    "Chipre",
+    "Croacia",
+    "Eslovaquia",
+    "Eslovenia",
+    "España",
+    "Estonia",
+    "Finlandia",
+    "Francia",
+    "Grecia",
+    "Irlanda",
+    "Italia",
+    "Letonia",
+    "Lituania",
+    "Luxemburgo",
+    "Malta",
+    "Mónaco",
+    "Montenegro",
+    "Países Bajos",
+    "Portugal",
+    "San Marino",
+    "Suiza",
+    "Ciudad del Vaticano"
+  ],
+  "zelle_countries": [
+    "United States",
+    "Estados Unidos"
+  ]
+}

@@ -97,6 +97,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   initRouter();
+
+  // Escuchar cambios de moneda para re-renderizar precios
+  if (typeof Currency !== 'undefined' && Currency.onChange) {
+    Currency.onChange(() => {
+      // Re-renderizar productos visibles según la categoría actual
+      const filtered = currentCategory === "all"
+        ? allProducts
+        : allProducts.filter((p) => p.categoria === currentCategory);
+      const available = filtered.filter((p) => p.disponibilidad !== false);
+      renderProducts(available);
+      
+      // Re-renderizar secciones especiales
+      renderBestSellers();
+      renderOffers();
+      
+      // Actualizar carrito
+      updateCart();
+      
+      // Actualizar resumen de pago si está abierto
+      const paymentSection = document.getElementById('payment-section');
+      if (paymentSection && !paymentSection.classList.contains('hidden') && typeof updateOrderSummary === 'function') {
+        updateOrderSummary();
+      }
+    });
+  }
 });
 
 // 1. Obtener productos
@@ -147,13 +172,13 @@ function renderProducts(productsToRender) {
 
   availableProducts.forEach((prod) => {
     let precioFinal = prod.precio;
-    let precioHtml = `$${precioFinal.toFixed(2)}`;
+    let precioHtml = Currency.formatPrice(precioFinal);
     let badgeHtml = "";
 
     if (prod.oferta || prod.descuento > 0) {
       let descPorcentaje = prod.descuento > 0 ? prod.descuento : 10;
       precioFinal = prod.precio - prod.precio * (descPorcentaje / 100);
-      precioHtml = `<span class="old-price">$${prod.precio.toFixed(2)}</span> $${precioFinal.toFixed(2)}`;
+      precioHtml = `<span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}`;
       badgeHtml = `<div class="badge-oferta">-${descPorcentaje}%</div>`;
     }
 
@@ -210,8 +235,8 @@ function renderBestSellers() {
       const precioFinal = getProductSalePrice(prod);
       const tieneDescuento = prod.oferta || prod.descuento > 0;
       const precioHtml = tieneDescuento
-        ? `<span class="old-price">$${prod.precio.toFixed(2)}</span> $${precioFinal.toFixed(2)}`
-        : `$${precioFinal.toFixed(2)}`;
+        ? `<span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}`
+        : Currency.formatPrice(precioFinal);
       const imageSrc = prod.imagenes?.[0] || "";
       return `
         <div class="product-card">
@@ -298,7 +323,7 @@ function renderOffers() {
           <div class="product-category">${prod.categoria}</div>
           <h3 class="product-title">${prod.nombre}</h3>
           <div class="deal-countdown"><i class="fas fa-clock"></i> Termina en: <span class="countdown-time" data-product-id="${prod.id}">${formatCountdown(deadline - Date.now())}</span></div>
-          <div class="product-price"><span class="old-price">$${prod.precio.toFixed(2)}</span> $${precioFinal.toFixed(2)}</div>
+          <div class="product-price"><span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}</div>
           <button class="btn-add-cart" onclick="addToCart('${prod.id}', ${precioFinal})">AÑADIR AL CARRITO</button>
         </div>
       `;
@@ -539,7 +564,7 @@ function renderSearchSuggestions(suggestions, query) {
             <img class="suggestion-thumb" src="${productImageUrl(image)}" alt="${prod.nombre}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
             <div class="suggestion-text">
                 <span class="suggestion-name">${prod.nombre}</span>
-                <span class="suggestion-price">$${(prod.precio || 0).toFixed(2)}</span>
+                <span class="suggestion-price">${Currency.formatPrice(prod.precio || 0)}</span>
             </div>
         </div>
     `;
@@ -657,9 +682,19 @@ function addToCart(id, precioFinal, qty = 1) {
 
   const existingItem = cart.find((item) => item.id === id);
   if (existingItem) {
-    existingItem.qty += qty;
+    // Si el producto ya está en el carrito, solo actualizar cantidad si está disponible
+    if (existingItem.disponible !== false) {
+      existingItem.qty += qty;
+    }
   } else {
-    cart.push({ ...product, qty, precioVenta: precioFinal });
+    // Nuevo item: incluir flags de disponibilidad y precio anterior
+    cart.push({ 
+      ...product, 
+      qty, 
+      precioVenta: precioFinal, 
+      disponible: product.disponibilidad !== false, 
+      precioAnterior: null 
+    });
   }
 
   updateCart();
@@ -671,19 +706,26 @@ function addToCart(id, precioFinal, qty = 1) {
 
 function changeQty(id, delta) {
   const item = cart.find((item) => item.id === id);
-  if (item) {
+  // No permitir cambios de cantidad en productos no disponibles
+  if (item && item.disponible !== false) {
     item.qty += delta;
     if (item.qty <= 0) {
       cart = cart.filter((i) => i.id !== id);
     }
+    updateCart();
   }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter((item) => item.id !== id);
   updateCart();
 }
 
 function updateCart() {
   localStorage.setItem("cart_casa_fresca", JSON.stringify(cart));
 
-  const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
+  // Count only available items for badge
+  const totalItems = cart.filter(item => item.disponible !== false).reduce((acc, item) => acc + item.qty, 0);
   cartCount.innerText = totalItems;
 
   cartItemsContainer.innerHTML = "";
@@ -693,27 +735,41 @@ function updateCart() {
     const priceValue = Number(item.precioVenta ?? item.precio ?? 0);
     const qty = Number(item.qty || 0);
     const subtotal = priceValue * qty;
-    total += subtotal;
+    const isAvailable = item.disponible !== false;
+    const priceChanged = item.precioAnterior !== null && item.precioAnterior !== undefined;
+    const oldPrice = priceChanged ? Number(item.precioAnterior) : null;
+    total += isAvailable ? subtotal : 0;
     const imageSrc = item.imagenes?.[0] || "";
 
     const cartItem = document.createElement("div");
-    cartItem.className = "cart-item";
+    cartItem.className = `cart-item ${!isAvailable ? 'unavailable' : ''} ${priceChanged ? 'price-changed' : ''}`;
     cartItem.innerHTML = `
             <img src="${productImageUrl(imageSrc)}" alt="${item.nombre}" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
             <div style="flex-grow: 1; margin: 0 10px;">
-                <h4 style="font-size:0.9rem; color: var(--text-dark);">${item.nombre}</h4>
-                <p style="color: var(--primary-red); font-weight: bold;">$${priceValue.toFixed(2)}</p>
+                <h4 style="font-size:0.9rem; color: var(--text-dark);">
+                    ${item.nombre}
+                    ${!isAvailable ? '<span class="unavailable-badge">⚠ No disponible</span>' : ''}
+                    ${priceChanged ? '<span class="price-changed-badge">Precio actualizado</span>' : ''}
+                </h4>
+                <div class="cart-item-prices">
+                    ${priceChanged && oldPrice !== null ? `<span class="price-old">${Currency.formatPrice(oldPrice)}</span>` : ''}
+                    <span class="price-current ${!isAvailable ? 'unavailable-price' : ''}">${Currency.formatPrice(priceValue)}</span>
+                </div>
             </div>
             <div class="qty-controls">
-                <button onclick="changeQty('${item.id}', -1)">-</button>
-                <span>${qty}</span>
-                <button onclick="changeQty('${item.id}', 1)">+</button>
+                ${!isAvailable ? `
+                    <button class="btn-remove-unavailable" onclick="removeFromCart('${item.id}')" title="Eliminar producto no disponible">Eliminar</button>
+                ` : `
+                    <button onclick="changeQty('${item.id}', -1)" ${qty <= 1 ? 'disabled' : ''}>-</button>
+                    <span>${qty}</span>
+                    <button onclick="changeQty('${item.id}', 1)">+</button>
+                `}
             </div>
         `;
     cartItemsContainer.appendChild(cartItem);
   });
 
-  cartTotalPrice.innerText = total.toFixed(2);
+  cartTotalPrice.innerText = Currency.formatPrice(total);
 }
 
 function validateCartItems(savedCart) {
@@ -727,22 +783,27 @@ function validateCartItems(savedCart) {
     }
 
     const product = allProducts.find((p) => p.id === item.id);
-    if (!product || product.disponibilidad === false) {
-      hasChanges = true;
-      return acc;
-    }
-
-    const currentPrice = getProductSalePrice(product);
+    const currentPrice = product ? getProductSalePrice(product) : Number(item.precioVenta ?? item.precio ?? 0);
     const quantity = Number(item.qty || 0);
+    const isAvailable = product && product.disponibilidad !== false;
+    const priceChanged = Number(item.precioVenta) !== currentPrice;
+
     if (quantity <= 0) {
       hasChanges = true;
       return acc;
     }
 
-    const normalizedItem = { ...product, qty: quantity, precioVenta: currentPrice };
+    // Keep item but mark availability and price changes
+    const normalizedItem = {
+      ...(product || item),
+      qty: quantity,
+      precioVenta: currentPrice,
+      disponible: isAvailable,
+      precioAnterior: priceChanged ? Number(item.precioVenta) : null
+    };
     acc.push(normalizedItem);
 
-    if (Number(item.precioVenta) !== currentPrice) {
+    if (!isAvailable || priceChanged) {
       hasChanges = true;
     }
 
@@ -1056,7 +1117,7 @@ function showProductDetail(
         <div class="related-product-card">
           <img src="${productImageUrl(p.imagenes[0])}" alt="${p.nombre}" class="related-product-image" onclick="showProductDetail('${p.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
           <h4 class="related-product-name">${p.nombre}</h4>
-          <div class="related-product-price">$${precioRelated.toFixed(2)}</div>
+          <div class="related-product-price">${Currency.formatPrice(precioRelated)}</div>
           <button class="btn-add-cart" onclick="addToCart('${p.id}', ${precioRelated})">Agregar</button>
         </div>
       `;
@@ -1075,7 +1136,7 @@ function showProductDetail(
           <h2 class="product-detail-title">${prod.nombre}</h2>
           <div class="product-detail-meta">${prod.categoria} ${disponibilidad}</div>
           <div class="product-detail-tags">${etiquetas}</div>
-          <div class="product-detail-price">$${precioFinal.toFixed(2)}${descPorcentaje>0?` <span class='product-detail-old-price'>$${prod.precio.toFixed(2)}</span> <span class='product-detail-discount'>-${descPorcentaje}%</span>`:''}</div>
+          <div class="product-detail-price">${Currency.formatPrice(precioFinal)}${descPorcentaje>0?` <span class='product-detail-old-price'>${Currency.formatPrice(prod.precio)}</span> <span class='product-detail-discount'>-${descPorcentaje}%</span>`:''}</div>
           ${qtySelector}
           ${variantes}
           <button class="btn-add-cart btn-add-cart--primary" id="addToCartBtn">AÑADIR AL CARRITO</button>

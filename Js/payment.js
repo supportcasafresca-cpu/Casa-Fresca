@@ -155,12 +155,12 @@ function updateOrderSummary() {
             <tr>
                 <td><strong>${item.nombre}</strong></td>
                 <td>x${item.qty}</td>
-                <td style="font-weight: bold; color: var(--primary-red);">$${itemTotal.toFixed(2)}</td>
+                <td style="font-weight: bold; color: var(--primary-red);">${Currency.formatPrice(itemTotal)}</td>
             </tr>
         `;
     }).join('');
 
-    paymentTotal.textContent = `$${total.toFixed(2)}`;
+    paymentTotal.textContent = Currency.formatPrice(total);
 }
 
 let isProcessingPayment = false; // bandera para evitar envíos múltiples
@@ -610,8 +610,11 @@ function validateCartBeforeCheckout() {
         return false;
     }
 
+    const unavailableProducts = [];
+    const priceChangedProducts = [];
     let hasRemovedItems = false;
     let hasPriceChanges = false;
+
     const cleanedCart = cartItems.reduce((acc, item) => {
         if (!item || typeof item !== 'object') {
             hasRemovedItems = true;
@@ -619,22 +622,40 @@ function validateCartBeforeCheckout() {
         }
 
         const product = allProducts.find((p) => p.id === item.id);
-        if (!product || product.disponibilidad === false) {
-            hasRemovedItems = true;
-            return acc;
-        }
-
-        const currentPrice = getCurrentProductSalePrice(product);
+        const currentPrice = product ? getCurrentProductSalePrice(product) : Number(item.precioVenta ?? item.precio ?? 0);
         const quantity = Number(item.qty || 0);
+        const isAvailable = product && product.disponibilidad !== false;
+        const priceChanged = Number(item.precioVenta) !== currentPrice;
+
         if (quantity <= 0) {
             hasRemovedItems = true;
             return acc;
         }
 
-        const normalizedItem = { ...product, qty: quantity, precioVenta: currentPrice };
+        if (!isAvailable) {
+            unavailableProducts.push(item.nombre || 'Producto desconocido');
+            // Keep item but mark as unavailable
+            const normalizedItem = {
+                ...(product || item),
+                qty: quantity,
+                precioVenta: currentPrice,
+                disponible: false,
+                precioAnterior: priceChanged ? Number(item.precioVenta) : null
+            };
+            acc.push(normalizedItem);
+            hasRemovedItems = true;
+            return acc;
+        }
+
+        const normalizedItem = { ...product, qty: quantity, precioVenta: currentPrice, disponible: true };
         acc.push(normalizedItem);
 
-        if (Number(item.precioVenta) !== currentPrice) {
+        if (priceChanged) {
+            priceChangedProducts.push({
+                nombre: product.nombre,
+                precioAnterior: Number(item.precioVenta),
+                precioNuevo: currentPrice
+            });
             hasPriceChanges = true;
         }
 
@@ -653,14 +674,18 @@ function validateCartBeforeCheckout() {
         return false;
     }
 
-    if (hasRemovedItems) {
-        showPaymentNotification('Algunos productos no están disponibles y se han quitado del carrito.', 'error');
+    // Bloquear si hay productos no disponibles
+    if (unavailableProducts.length > 0) {
+        const nombres = unavailableProducts.join(', ');
+        showPaymentNotification(`No puedes proceder: ${nombres} ya no están disponibles. Elimínalos del carrito.`, 'error');
         return false;
     }
 
+    // Advertir sobre cambios de precio pero permitir continuar
     if (hasPriceChanges) {
-        showPaymentNotification('Los precios del carrito cambiaron. Revisa el resumen antes de confirmar.', 'error');
-        return false;
+        const detalles = priceChangedProducts.map(p => `${p.nombre}: ${Currency.formatPrice(p.precioAnterior)} → ${Currency.formatPrice(p.precioNuevo)}`).join('; ');
+        showPaymentNotification(`Precios actualizados: ${detalles}. Revisa el resumen antes de confirmar.`, 'info');
+        // No retornamos false, permitimos continuar pero avisamos
     }
 
     return true;

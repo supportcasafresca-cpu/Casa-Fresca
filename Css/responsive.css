@@ -117,6 +117,22 @@
     }
     .nav-icons {
         order: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .currency-toggle {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        min-width: 65px;
+        height: 36px;
+        gap: 4px;
+    }
+    #currencySymbol {
+        font-size: 1em;
+    }
+    #currencyCode {
+        font-size: 0.75em;
     }
     .search-bar {
         order: 3;

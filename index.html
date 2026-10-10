@@ -72,6 +72,10 @@
                         aria-label="Sugerencias de búsqueda"></div>
                 </div>
                 <div class="nav-icons">
+                    <div class="currency-toggle" id="currencyToggle" title="Cambiar moneda" role="button" tabindex="0" aria-label="Cambiar entre Euros y Dólares">
+                        <span id="currencySymbol">$</span>
+                        <span id="currencyCode">USD</span>
+                    </div>
                     <div class="cart-icon" id="openCartBtn">
                         <i class="fas fa-shopping-cart"></i>
                         <span id="cartCount">0</span>
@@ -229,7 +233,7 @@
                 </header>
                 <div class="cart-items" id="cartItemsContainer"></div>
                 <footer class="cart-footer">
-                    <div class="cart-total">Total: $<span
+                    <div class="cart-total">Total: <span
                             id="cartTotalPrice">0.00</span></div>
                     <button class="btn-checkout" onclick="openPaymentFromCart()">PAGAR AHORA</button>
                 </footer>
@@ -361,7 +365,7 @@
                     <div class="order-total"
                         style="text-align: right; font-size: 1.3rem; font-weight: bold; margin: 20px 0; color: var(--primary-red);">
                         <p>Total a pagar: <span
-                                id="payment-total">$0.00</span></p>
+                                id="payment-total">0.00</span></p>
                     </div>
 
                     <div class="payment-actions"
@@ -404,6 +408,7 @@
             <i class="fab fa-whatsapp" aria-hidden="true"></i>
         </a>
 
+        <script src="Js/currency.js"></script>
         <script src="Js/app.js"></script>
         <script src="Js/payment.js"></script>
     </body>
