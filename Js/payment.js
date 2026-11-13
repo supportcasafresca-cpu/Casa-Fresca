@@ -1,4 +1,3 @@
-const BACKEND = 'https://backend-casafresca.onrender.com';
 const CART_STORAGE_KEY = 'cart_casa_fresca';
 
 // Keys para guardar datos de cliente en localStorage
@@ -269,7 +268,7 @@ async function sendPaymentToServer(orderPayload) {
     console.log('Enviando pedido a tu backend Node.js:', orderPayload);
     
     try {
-        const response = await fetch(`${BACKEND}/send-pedido`, {
+        const response = await fetch(window.CASA_FRESCA_CONFIG.apiUrl('/send-pedido'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -454,7 +453,7 @@ async function sendPageViewStatistics() {
 
 async function sendStatisticsToBackend(data) {
     try {
-        const response = await fetch(`${BACKEND}/guardar-estadistica`, {
+        const response = await fetch(window.CASA_FRESCA_CONFIG.apiUrl('/guardar-estadistica'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -734,9 +733,9 @@ async function loadPaymentCountryList() {
     if (!container) return;
 
     try {
-        const resp = await fetch('Json/pay.json');
-        if (!resp.ok) throw new Error('No se pudo cargar el listado de países');
-        const data = await resp.json();
+        const response = await window.CASA_FRESCA_CONFIG.fetchJson('/api/pay');
+        const data = response.pay;
+        if (!data) throw new Error('El backend no devolvió la configuración de pago');
 
         let html = '<p>Por favor revisa cuidadosamente el listado y confirma que tu país está incluido. Países compatibles con nuestros métodos de pago:</p>';
         if (Array.isArray(data.iban_countries)) {

@@ -67,12 +67,13 @@ const categoryDrawer = document.getElementById("categoryDrawer");
 const closeCategoryDrawerBtn = document.getElementById("closeCategoryDrawerBtn");
 const categoryListDrawer = document.getElementById("categoryListDrawer");
 
-// Rutas y fallback para imágenes de productos
-const IMAGE_BASE_PATH = "/Img/products/";
+// El fallback solo se usa cuando el producto no tiene una imagen accesible.
 const IMAGE_FALLBACK =
   "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D'http%3A//www.w3.org/2000/svg'%20width%3D'320'%20height%3D'240'%3E%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'%23f2f2f2'/%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20dominant-baseline%3D'middle'%20text-anchor%3D'middle'%20fill%3D'%23999'%20font-size%3D'18'%3EImagen%20no%20disponible%3C/text%3E%3C/svg%3E";
 function productImageUrl(filename) {
-  return filename ? `${IMAGE_BASE_PATH}${filename}` : IMAGE_FALLBACK;
+  return typeof filename === "string" && /^https?:\/\//i.test(filename)
+    ? filename
+    : IMAGE_FALLBACK;
 }
 function applyImageFallback(img) {
   if (img) {
@@ -127,14 +128,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 // 1. Obtener productos
 async function fetchProducts() {
   try {
-    const response = await fetch("./Json/products.json");
-    if (!response.ok) throw new Error("Error en red");
-    
-    const data = await response.json();
-
-    // ARREGLO PARA ESTRUCTURA DE JSON:
-    // Si data es un Array, lo usa. Si es un objeto, busca la propiedad .products
-    allProducts = Array.isArray(data) ? data : (data.products || []);
+    const data = await window.CASA_FRESCA_CONFIG.fetchJson("/api/products");
+    if (!Array.isArray(data.products)) {
+      throw new Error("El backend no devolvió una lista de productos válida.");
+    }
+    allProducts = data.products.map((product) => {
+      if (!Array.isArray(product.imagenes_url)) {
+        throw new Error(`El backend no devolvió las imágenes del producto ${product.id}.`);
+      }
+      return { ...product, imagenes: product.imagenes_url };
+    });
 
     renderCategories(allProducts);
     renderProducts(allProducts);
@@ -1343,4 +1346,3 @@ function initSlider() {
 
 // ============ FUNCIONES DE DESCARGA DE APP ============
 // Eliminadas porque la app móvil ya no se va a usar.
-

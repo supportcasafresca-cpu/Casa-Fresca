@@ -18,13 +18,11 @@ const Currency = (function() {
         'USD': { symbol: '$', position: 'prefix', space: true }
     };
 
-    // Load IBAN countries from pay.json
+    // Load IBAN countries through the Casa Fresca backend.
     async function loadIbanCountries() {
         try {
-            const response = await fetch('./Json/pay.json');
-            if (!response.ok) throw new Error('Failed to load pay.json');
-            const data = await response.json();
-            return data.iban_countries || [];
+            const data = await window.CASA_FRESCA_CONFIG.fetchJson('/api/pay');
+            return data.pay?.iban_countries || [];
         } catch (error) {
             console.warn('Could not load IBAN countries, using fallback:', error);
             // Fallback list
