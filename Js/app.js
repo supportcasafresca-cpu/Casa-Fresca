@@ -1,5 +1,7 @@
 // Estado Global
 let allProducts = [];
+let allPacks = [];
+let productInfoById = new Map();
 let cart = [];
 let lastListScroll = 0; // Guardar scroll previo al entrar en detalle de producto
 let scrollPositions = {}; // Guardar posiciones de scroll por categoría
@@ -75,6 +77,78 @@ function productImageUrl(filename) {
     ? filename
     : IMAGE_FALLBACK;
 }
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+function getMinimumQuantity(product) {
+  const minimum = Math.floor(Number(product?.cantidad_minima ?? 1));
+  return Number.isFinite(minimum) && minimum > 0 ? minimum : 1;
+}
+function isStockControlled(product) {
+  return product?.aplicar_stock === true
+    || (typeof product?.aplicar_stock === "string" && product.aplicar_stock.toLowerCase() === "true")
+    || Number(product?.aplicar_stock) === 1;
+}
+function getCartQuantityForProduct(productId) {
+  return cart.reduce((total, item) => total + (item.id === productId && !item.isPack ? Number(item.qty || 0) : 0), 0);
+}
+function getAvailableStock(product) {
+  if (!isStockControlled(product)) return Number.POSITIVE_INFINITY;
+  const stock = Number(product.stock ?? 0);
+  return Number.isFinite(stock) ? Math.max(0, stock - getCartQuantityForProduct(product.id)) : 0;
+}
+function canAddProduct(product, quantity = getMinimumQuantity(product)) {
+  return Boolean(product)
+    && product.disponibilidad !== false
+    && product.activo !== false
+    && (!isStockControlled(product) || getAvailableStock(product) >= quantity);
+}
+function isProductAvailable(product) {
+  return Boolean(product)
+    && product.disponibilidad !== false
+    && product.activo !== false
+    && (!isStockControlled(product) || Number(product.stock ?? 0) >= getMinimumQuantity(product));
+}
+function hasProductStock(product, quantity) {
+  return Boolean(product)
+    && (!isStockControlled(product) || Number(product.stock ?? 0) >= quantity);
+}
+function getPackImages(pack) {
+  if (Array.isArray(pack?.imagenes_url) && pack.imagenes_url.length) return pack.imagenes_url;
+  if (Array.isArray(pack?.imagenes)) return pack.imagenes;
+  return typeof pack?.imagenes === "string" && pack.imagenes ? [pack.imagenes] : [];
+}
+function getPackFeatures(pack) {
+  if (Array.isArray(pack?.caracteristicas)) return pack.caracteristicas;
+  return typeof pack?.caracteristicas === "string"
+    ? pack.caracteristicas.split(/\r?\n/).map((feature) => feature.trim()).filter(Boolean)
+    : [];
+}
+function isPackAvailable(pack) {
+  return pack?.activo !== false && pack?.disponible !== false;
+}
+function getPackSalePrice(pack) {
+  const price = Number(pack?.precio ?? 0);
+  const discount = Number(pack?.descuento ?? 0);
+  const percentage = discount > 0 ? discount : (pack?.oferta ? 10 : 0);
+  return Number((price - price * percentage / 100).toFixed(2));
+}
+function getAvailabilityLabel(product) {
+  if (product.disponibilidad === false || product.activo === false) return "No disponible";
+  if (isStockControlled(product)) {
+    const stock = Number(product.stock ?? 0);
+    if (stock < getMinimumQuantity(product)) return "Agotado";
+    if (stock > 0 && stock < 10) return `Stock bajo: ${stock}`;
+    return `Disponibles: ${stock}`;
+  }
+  return "Disponible";
+}
 function applyImageFallback(img) {
   if (img) {
     img.onerror = null;
@@ -85,17 +159,11 @@ function applyImageFallback(img) {
 // Inicialización
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchProducts();
+  await fetchPacks();
   loadCartFromStorage();
 
   // INICIALIZAR SLIDER
   initSlider();
-
-  // NUEVA LÓGICA: Leer el hash que envía el backend
-  const hash = window.location.hash.substring(1);
-  if (hash) {
-    const productId = decodeURIComponent(hash);
-    showProductDetail(productId); // Llama a tu función existente
-  }
 
   initRouter();
 
@@ -112,6 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Re-renderizar secciones especiales
       renderBestSellers();
       renderOffers();
+      renderPacks();
       
       // Actualizar carrito
       updateCart();
@@ -138,6 +207,17 @@ async function fetchProducts() {
       }
       return { ...product, imagenes: product.imagenes_url };
     });
+    try {
+      const infoData = await window.CASA_FRESCA_CONFIG.fetchJson("/api/info");
+      productInfoById = new Map(
+        (Array.isArray(infoData.info) ? infoData.info : [])
+          .filter((entry) => entry?.id && entry?.info)
+          .map((entry) => [String(entry.id), String(entry.info)])
+      );
+    } catch (infoError) {
+      console.error("Error cargando las notas de productos:", infoError);
+      productInfoById = new Map();
+    }
 
     renderCategories(allProducts);
     renderProducts(allProducts);
@@ -160,12 +240,28 @@ async function fetchProducts() {
   }
 }
 
+async function fetchPacks() {
+  const section = document.getElementById("packsSection");
+  if (!section) return;
+  try {
+    const data = await window.CASA_FRESCA_CONFIG.fetchJson("/api/packs");
+    if (!Array.isArray(data.packs)) {
+      throw new Error("El backend no devolvió una lista de packs válida.");
+    }
+    allPacks = data.packs;
+    renderPacks();
+  } catch (error) {
+    console.error("Error cargando packs:", error);
+    section.classList.add("hidden");
+  }
+}
+
 // 2. Renderizar Productos
 function renderProducts(productsToRender) {
   productsGrid.innerHTML = "";
 
   // Filtrar productos: solo mostrar los que tienen disponibilidad=true
-  const availableProducts = productsToRender.filter(prod => prod.disponibilidad !== false);
+  const availableProducts = productsToRender.filter(prod => prod.disponibilidad !== false && prod.activo !== false);
 
   if (availableProducts.length === 0) {
     productsGrid.innerHTML =
@@ -191,12 +287,69 @@ function renderProducts(productsToRender) {
     card.innerHTML = `
             ${badgeHtml}
             <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
-            <div class="product-category">${prod.categoria}</div>
-            <h3 class="product-title">${prod.nombre}</h3>
+            <div class="product-category">${escapeHtml(prod.categoria)}</div>
+            <h3 class="product-title">${escapeHtml(prod.nombre)}</h3>
+            ${isStockControlled(prod) ? `<div class="product-stock ${getAvailabilityLabel(prod).startsWith("Stock bajo") ? "low" : ""}">${escapeHtml(getAvailabilityLabel(prod))}</div>` : ""}
             <div class="product-price">${precioHtml}</div>
-            <button class="btn-add-cart" onclick="addToCart('${prod.id}', ${precioFinal})">AÑADIR AL CARRITO</button>
+            <button class="btn-add-cart" data-product-add-id="${escapeHtml(prod.id)}" onclick="addToCart('${prod.id}', ${precioFinal})" ${!canAddProduct(prod) ? "disabled" : ""}>${prod.disponibilidad === false || prod.activo === false ? "NO DISPONIBLE" : (isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "AGOTADO" : `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}`)}</button>
         `;
     productsGrid.appendChild(card);
+  });
+}
+
+function renderPacks() {
+  const section = document.getElementById("packsSection");
+  const grid = document.getElementById("packsGrid");
+  if (!section || !grid) return;
+
+  const packs = allPacks.filter(isPackAvailable);
+  if (!packs.length) {
+    section.classList.add("hidden");
+    grid.innerHTML = "";
+    return;
+  }
+
+  section.classList.remove("hidden");
+  grid.innerHTML = packs.map((pack) => {
+    const price = Number(pack.precio ?? 0);
+    const salePrice = getPackSalePrice(pack);
+    const images = getPackImages(pack);
+    const image = images[0] || "";
+    const discount = price > 0 ? Math.round((price - salePrice) / price * 100) : 0;
+    const features = getPackFeatures(pack);
+    return `
+      <article class="product-card pack-card">
+        ${pack.top ? '<span class="pack-badge">Destacado</span>' : ""}
+        ${pack.nuevo ? '<span class="pack-badge pack-badge--new">Nuevo</span>' : ""}
+        ${discount > 0 ? `<div class="badge-oferta">-${discount}%</div>` : ""}
+        <img src="${productImageUrl(image)}" alt="${escapeHtml(pack.nombre)}" class="product-image" data-pack-detail="${escapeHtml(pack.id)}" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+        <div class="product-category">Pack</div>
+        <h3 class="product-title">${escapeHtml(pack.nombre)}</h3>
+        <p class="pack-description">${escapeHtml(pack.descripcion || "")}</p>
+        ${features.length ? `<ul class="pack-features">${features.slice(0, 3).map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>` : ""}
+        <div class="product-price">${discount ? `<span class="old-price">${Currency.formatPrice(price)}</span> ` : ""}${Currency.formatPrice(salePrice)}</div>
+        <button class="btn-add-cart" type="button" data-pack-add="${escapeHtml(pack.id)}">AÑADIR PACK AL CARRITO</button>
+      </article>
+    `;
+  }).join("");
+
+  grid.querySelectorAll("[data-pack-detail]").forEach((image) => {
+    image.addEventListener("click", () => showPackDetail(image.dataset.packDetail));
+    image.tabIndex = 0;
+    image.setAttribute("role", "button");
+    image.setAttribute("aria-label", `Ver detalles de ${image.alt}`);
+    image.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        showPackDetail(image.dataset.packDetail);
+      }
+    });
+  });
+  grid.querySelectorAll("[data-pack-add]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const pack = allPacks.find((entry) => entry.id === button.dataset.packAdd);
+      if (pack) addPackToCart(pack.id, getPackSalePrice(pack));
+    });
   });
 }
 
@@ -223,7 +376,7 @@ function renderBestSellers() {
   if (!section || !grid) return;
 
   const bestSellers = allProducts.filter(
-    (p) => p.mas_vendido && p.disponibilidad !== false,
+    (p) => p.mas_vendido && p.disponibilidad !== false && p.activo !== false,
   );
 
   if (bestSellers.length === 0) {
@@ -248,7 +401,7 @@ function renderBestSellers() {
           <div class="product-category">${prod.categoria}</div>
           <h3 class="product-title">${prod.nombre}</h3>
           <div class="product-price">${precioHtml}</div>
-          <button class="btn-add-cart" onclick="addToCart('${prod.id}', ${precioFinal})">AÑADIR AL CARRITO</button>
+          <button class="btn-add-cart" data-product-add-id="${escapeHtml(prod.id)}" onclick="addToCart('${prod.id}', ${precioFinal})" ${!canAddProduct(prod) ? "disabled" : ""}>${isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "AGOTADO" : `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}`}</button>
         </div>
       `;
     })
@@ -303,7 +456,7 @@ function renderOffers() {
   if (!section || !grid) return;
 
   const offers = allProducts.filter(
-    (p) => (p.oferta || p.descuento > 0) && p.disponibilidad !== false,
+    (p) => (p.oferta || p.descuento > 0) && p.disponibilidad !== false && p.activo !== false,
   );
 
   if (offers.length === 0) {
@@ -327,7 +480,7 @@ function renderOffers() {
           <h3 class="product-title">${prod.nombre}</h3>
           <div class="deal-countdown"><i class="fas fa-clock"></i> Termina en: <span class="countdown-time" data-product-id="${prod.id}">${formatCountdown(deadline - Date.now())}</span></div>
           <div class="product-price"><span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}</div>
-          <button class="btn-add-cart" onclick="addToCart('${prod.id}', ${precioFinal})">AÑADIR AL CARRITO</button>
+          <button class="btn-add-cart" data-product-add-id="${escapeHtml(prod.id)}" onclick="addToCart('${prod.id}', ${precioFinal})" ${!canAddProduct(prod) ? "disabled" : ""}>${isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "AGOTADO" : `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}`}</button>
         </div>
       `;
     })
@@ -354,7 +507,7 @@ function getUniqueCategories(products) {
   return [
     ...new Set(
       products
-        .filter((prod) => prod.disponibilidad !== false)
+        .filter((prod) => prod.disponibilidad !== false && prod.activo !== false)
         .map((prod) => prod.categoria)
         .filter(Boolean),
     ),
@@ -681,22 +834,21 @@ document.addEventListener("touchstart", (e) => {
 // 5. Lógica del Carrito
 function addToCart(id, precioFinal, qty = 1) {
   const product = allProducts.find((p) => p.id === id);
-  if (!product) return;
+  if (!product) return false;
+  const quantity = Math.max(getMinimumQuantity(product), Math.floor(Number(qty) || 1));
+  if (!canAddProduct(product, quantity)) return false;
 
-  const existingItem = cart.find((item) => item.id === id);
+  const existingItem = cart.find((item) => item.id === id && !item.isPack);
   if (existingItem) {
-    // Si el producto ya está en el carrito, solo actualizar cantidad si está disponible
-    if (existingItem.disponible !== false) {
-      existingItem.qty += qty;
-    }
+    existingItem.qty += quantity;
   } else {
-    // Nuevo item: incluir flags de disponibilidad y precio anterior
-    cart.push({ 
-      ...product, 
-      qty, 
-      precioVenta: precioFinal, 
-      disponible: product.disponibilidad !== false, 
-      precioAnterior: null 
+    cart.push({
+      ...product,
+      qty: quantity,
+      precioVenta: precioFinal,
+      disponible: true,
+      precioAnterior: null,
+      isPack: false,
     });
   }
 
@@ -705,22 +857,54 @@ function addToCart(id, precioFinal, qty = 1) {
   // Efecto visual rápido para el usuario
   openCartBtn.style.transform = "scale(1.2)";
   setTimeout(() => (openCartBtn.style.transform = "scale(1)"), 200);
+  return true;
+}
+
+function addPackToCart(id, precioFinal, qty = 1) {
+  const pack = allPacks.find((entry) => entry.id === id);
+  const quantity = Math.max(1, Math.floor(Number(qty) || 1));
+  if (!pack || !isPackAvailable(pack)) return false;
+
+  const existingItem = cart.find((item) => item.id === id && item.isPack);
+  if (existingItem) {
+    existingItem.qty += quantity;
+  } else {
+    cart.push({
+      ...pack,
+      imagenes: getPackImages(pack),
+      qty: quantity,
+      precioVenta: precioFinal,
+      disponible: true,
+      precioAnterior: null,
+      isPack: true,
+    });
+  }
+  updateCart();
+  openCartBtn.style.transform = "scale(1.2)";
+  setTimeout(() => (openCartBtn.style.transform = "scale(1)"), 200);
+  return true;
 }
 
 function changeQty(id, delta) {
-  const item = cart.find((item) => item.id === id);
-  // No permitir cambios de cantidad en productos no disponibles
-  if (item && item.disponible !== false) {
-    item.qty += delta;
-    if (item.qty <= 0) {
-      cart = cart.filter((i) => i.id !== id);
-    }
-    updateCart();
-  }
+  const item = cart.find((entry) => entry.id === id && !entry.isPack);
+  const product = allProducts.find((entry) => entry.id === id);
+  if (!item || !product || (delta > 0 && getAvailableStock(product) < delta)) return;
+  const nextQuantity = item.qty + delta;
+  if (nextQuantity < getMinimumQuantity(product) || !hasProductStock(product, nextQuantity)) return;
+  item.qty = nextQuantity;
+  updateCart();
 }
 
-function removeFromCart(id) {
-  cart = cart.filter((item) => item.id !== id);
+function changePackQty(id, delta) {
+  const item = cart.find((entry) => entry.id === id && entry.isPack);
+  const pack = allPacks.find((entry) => entry.id === id);
+  if (!item || !pack || !isPackAvailable(pack) || item.qty + delta < 1) return;
+  item.qty += delta;
+  updateCart();
+}
+
+function removeFromCart(id, isPack = false) {
+  cart = cart.filter((item) => item.id !== id || Boolean(item.isPack) !== Boolean(isPack));
   updateCart();
 }
 
@@ -738,7 +922,12 @@ function updateCart() {
     const priceValue = Number(item.precioVenta ?? item.precio ?? 0);
     const qty = Number(item.qty || 0);
     const subtotal = priceValue * qty;
-    const isAvailable = item.disponible !== false;
+    const catalogItem = item.isPack
+      ? allPacks.find((pack) => pack.id === item.id)
+      : allProducts.find((product) => product.id === item.id);
+    const isAvailable = item.isPack
+      ? Boolean(catalogItem && isPackAvailable(catalogItem))
+      : Boolean(catalogItem && qty >= getMinimumQuantity(catalogItem) && hasProductStock(catalogItem, qty) && catalogItem.disponibilidad !== false && catalogItem.activo !== false);
     const priceChanged = item.precioAnterior !== null && item.precioAnterior !== undefined;
     const oldPrice = priceChanged ? Number(item.precioAnterior) : null;
     total += isAvailable ? subtotal : 0;
@@ -751,6 +940,7 @@ function updateCart() {
             <div style="flex-grow: 1; margin: 0 10px;">
                 <h4 style="font-size:0.9rem; color: var(--text-dark);">
                     ${item.nombre}
+                    ${item.isPack ? '<span class="cart-pack-badge">Pack</span>' : ''}
                     ${!isAvailable ? '<span class="unavailable-badge">⚠ No disponible</span>' : ''}
                     ${priceChanged ? '<span class="price-changed-badge">Precio actualizado</span>' : ''}
                 </h4>
@@ -761,48 +951,89 @@ function updateCart() {
             </div>
             <div class="qty-controls">
                 ${!isAvailable ? `
-                    <button class="btn-remove-unavailable" onclick="removeFromCart('${item.id}')" title="Eliminar producto no disponible">Eliminar</button>
+                    <button class="btn-remove-unavailable" onclick="removeFromCart('${escapeHtml(item.id)}', ${Boolean(item.isPack)})" title="Eliminar producto no disponible">Eliminar</button>
                 ` : `
-                    <button onclick="changeQty('${item.id}', -1)" ${qty <= 1 ? 'disabled' : ''}>-</button>
+                    <button onclick="${item.isPack ? `changePackQty('${escapeHtml(item.id)}', -1)` : `changeQty('${escapeHtml(item.id)}', -1)`}" ${item.isPack ? (qty <= 1 ? 'disabled' : '') : (qty <= getMinimumQuantity(catalogItem) ? 'disabled' : '')}>-</button>
                     <span>${qty}</span>
-                    <button onclick="changeQty('${item.id}', 1)">+</button>
+                    <button onclick="${item.isPack ? `changePackQty('${escapeHtml(item.id)}', 1)` : `changeQty('${escapeHtml(item.id)}', 1)`}" ${!item.isPack && getAvailableStock(catalogItem) < 1 ? 'disabled' : ''}>+</button>
                 `}
             </div>
+            ${isAvailable ? `<button class="cart-remove-btn" onclick="removeFromCart('${escapeHtml(item.id)}', ${Boolean(item.isPack)})" aria-label="Eliminar ${escapeHtml(item.nombre)} del carrito">Eliminar</button>` : ""}
         `;
     cartItemsContainer.appendChild(cartItem);
   });
 
   cartTotalPrice.innerText = Currency.formatPrice(total);
+  refreshProductAddButtons();
+}
+
+function refreshProductAddButtons() {
+  document.querySelectorAll("[data-product-add-id]").forEach((button) => {
+    const product = allProducts.find((entry) => entry.id === button.dataset.productAddId);
+    if (!product) {
+      button.disabled = true;
+      return;
+    }
+    const available = canAddProduct(product);
+    button.disabled = !available;
+    button.textContent = available
+      ? `AÑADIR${getMinimumQuantity(product) > 1 ? ` (MÍN. ${getMinimumQuantity(product)})` : " AL CARRITO"}`
+      : (isStockControlled(product) && getAvailableStock(product) < getMinimumQuantity(product) ? "AGOTADO" : "NO DISPONIBLE");
+  });
 }
 
 function validateCartItems(savedCart) {
   if (!Array.isArray(savedCart)) return [];
 
   let hasChanges = false;
-  const cleaned = savedCart.reduce((acc, item) => {
+  const groupedItems = new Map();
+  savedCart.forEach((item) => {
+    if (!item || typeof item !== "object") return;
+    const isPack = Boolean(item.isPack || item.type === "pack");
+    const key = `${isPack ? "pack" : "product"}:${item.id}`;
+    const existing = groupedItems.get(key);
+    if (existing) {
+      existing.qty = Number(existing.qty || 0) + Number(item.qty || 0);
+      hasChanges = true;
+    } else {
+      groupedItems.set(key, { ...item, isPack });
+    }
+  });
+  if (groupedItems.size !== savedCart.length) hasChanges = true;
+
+  const cleaned = Array.from(groupedItems.values()).reduce((acc, item) => {
     if (!item || typeof item !== "object") {
       hasChanges = true;
       return acc;
     }
 
-    const product = allProducts.find((p) => p.id === item.id);
-    const currentPrice = product ? getProductSalePrice(product) : Number(item.precioVenta ?? item.precio ?? 0);
+    const isPack = Boolean(item.isPack || item.type === "pack");
+    const catalogItem = isPack
+      ? allPacks.find((pack) => pack.id === item.id)
+      : allProducts.find((p) => p.id === item.id);
+    const currentPrice = catalogItem
+      ? (isPack ? getPackSalePrice(catalogItem) : getProductSalePrice(catalogItem))
+      : Number(item.precioVenta ?? item.precio ?? 0);
     const quantity = Number(item.qty || 0);
-    const isAvailable = product && product.disponibilidad !== false;
+    const isAvailable = isPack
+      ? Boolean(catalogItem && isPackAvailable(catalogItem))
+      : Boolean(catalogItem && quantity >= getMinimumQuantity(catalogItem) && hasProductStock(catalogItem, quantity) && catalogItem.disponibilidad !== false && catalogItem.activo !== false);
     const priceChanged = Number(item.precioVenta) !== currentPrice;
 
-    if (quantity <= 0) {
+    if (!Number.isInteger(quantity) || quantity <= 0) {
       hasChanges = true;
       return acc;
     }
 
     // Keep item but mark availability and price changes
     const normalizedItem = {
-      ...(product || item),
+      ...(catalogItem || item),
+      ...(isPack ? { imagenes: getPackImages(catalogItem), type: "pack" } : {}),
       qty: quantity,
       precioVenta: currentPrice,
       disponible: isAvailable,
-      precioAnterior: priceChanged ? Number(item.precioVenta) : null
+      precioAnterior: priceChanged ? Number(item.precioVenta) : null,
+      isPack,
     };
     acc.push(normalizedItem);
 
@@ -900,7 +1131,7 @@ function hideProductDetail({ fromPopState = false } = {}) {
     });
   }
 
-  if (!fromPopState && history.state && history.state.type === "product") {
+  if (!fromPopState && history.state && ["product", "pack"].includes(history.state.type)) {
     history.back();
   }
 }
@@ -951,6 +1182,10 @@ function handlePopState(event) {
     showProductDetail(state.productId, { fromPopState: true });
     return;
   }
+  if (state && state.type === "pack") {
+    showPackDetail(state.packId, { fromPopState: true });
+    return;
+  }
 
   // Cierra el drawer de producto si estaba abierto.
   hideProductDetail({ fromPopState: true });
@@ -969,6 +1204,13 @@ function handlePopState(event) {
 function initRouter() {
   // Siempre manejamos cambios de navegación (atrás/adelante)
   window.addEventListener("popstate", handlePopState);
+
+  const packMatch = window.location.pathname.match(/^\/packs?\/(.+)/);
+  if (packMatch) {
+    history.replaceState({ type: "home" }, "", "/");
+    showPackDetail(decodeURIComponent(packMatch[1]));
+    return;
+  }
 
   // Si el usuario entra directamente en /p/:id
   const productMatch = window.location.pathname.match(/^\/p\/(.+)/);
@@ -991,12 +1233,19 @@ function initRouter() {
   }
 
   // Si hay un hash (por ejemplo #/Lácteos), restauramos la categoría
-  const hashMatch = window.location.hash.match(/^#\/(.+)/);
+  const initialHash = window.location.hash;
+  const hashMatch = initialHash.match(/^#\/(.+)/);
   if (hashMatch) {
     const categoryFromHash = decodeURIComponent(hashMatch[1]);
     navigateToCategory(categoryFromHash, { replaceState: true });
   } else {
     navigateToCategory("all", { replaceState: true });
+    const directId = initialHash.substring(1);
+    if (directId) {
+      const pack = allPacks.find((entry) => entry.id === decodeURIComponent(directId));
+      if (pack) showPackDetail(pack.id);
+      else showProductDetail(decodeURIComponent(directId), { replaceState: true });
+    }
   }
 
   // Click en el logo siempre vuelve al home
@@ -1067,22 +1316,20 @@ function showProductDetail(
   }
 
   // Miniaturas
-  const thumbs = (prod.imagenes || [])
-    .map(
-      (img) =>
-        `<img src="${productImageUrl(img)}" alt="${prod.nombre}" class="product-detail-thumb" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">`,
-    )
-    .join("");
+  const productImages = Array.isArray(prod.imagenes) ? prod.imagenes : [];
+  const thumbs = productImages.map((img, index) =>
+    `<button type="button" class="product-detail-thumb-button ${index === 0 ? "active" : ""}" data-product-image-index="${index}" aria-label="Ver imagen ${index + 1} de ${escapeHtml(prod.nombre)}"><img src="${productImageUrl(img)}" alt="" class="product-detail-thumb" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';"></button>`,
+  ).join("");
 
   // Breadcrumbs
-  const breadcrumbs = `<nav class="product-detail-breadcrumbs">Inicio / ${prod.categoria} / ${prod.nombre}</nav>`;
+  const breadcrumbs = `<nav class="product-detail-breadcrumbs">Inicio / ${escapeHtml(prod.categoria)} / ${escapeHtml(prod.nombre)}</nav>`;
 
   // Selector de cantidad funcional y estilizado
   const qtySelector = `<div class="product-detail-qty">
       <span>Cantidad:</span>
-      <button id="qtyMinus" class="product-detail-qty-btn">-</button>
-      <span id="detailQty">1</span>
-      <button id="qtyPlus" class="product-detail-qty-btn">+</button>
+      <button id="qtyMinus" class="product-detail-qty-btn" aria-label="Reducir cantidad">-</button>
+      <span id="detailQty">${getMinimumQuantity(prod)}</span>
+      <button id="qtyPlus" class="product-detail-qty-btn" aria-label="Aumentar cantidad">+</button>
     </div>`;
 
   // Variantes (si existen)
@@ -1091,9 +1338,12 @@ function showProductDetail(
     : "";
 
   // Disponibilidad
-  const disponibilidad = prod.disponibilidad
-    ? `<span class="product-detail-stock available">Disponible</span>`
-    : `<span class="product-detail-stock soldout">Agotado</span>`;
+  const available = isProductAvailable(prod);
+  const disponibilidad = `<span class="product-detail-stock ${available ? "available" : "soldout"}">${escapeHtml(getAvailabilityLabel(prod))}</span>`;
+  const notes = productInfoById.get(String(prod.id));
+  const productNotesHTML = notes
+    ? `<section class="product-detail-notes"><h3>Notas del producto</h3><p>${escapeHtml(notes)}</p></section>`
+    : "";
 
   // Etiquetas
   const etiquetas = [
@@ -1131,20 +1381,21 @@ function showProductDetail(
     <div class="product-detail-wrapper">
       <div class="amazon-detail-layout">
         <div class="left-column">
-          <img src="${productImageUrl(prod.imagenes[0])}" alt="${prod.nombre}" class="product-detail-image" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+            <img id="productDetailMainImage" src="${productImageUrl(productImages[0] || "")}" alt="${escapeHtml(prod.nombre)}" class="product-detail-image" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
           <div class="product-detail-thumbs">${thumbs}</div>
         </div>
         <div class="right-column">
           ${breadcrumbs}
-          <h2 class="product-detail-title">${prod.nombre}</h2>
-          <div class="product-detail-meta">${prod.categoria} ${disponibilidad}</div>
+            <h2 class="product-detail-title">${escapeHtml(prod.nombre)}</h2>
+          <div class="product-detail-meta">${escapeHtml(prod.categoria)} ${disponibilidad}${getMinimumQuantity(prod) > 1 ? `<span class="product-detail-minimum">Compra mínima: ${getMinimumQuantity(prod)}</span>` : ""}</div>
           <div class="product-detail-tags">${etiquetas}</div>
           <div class="product-detail-price">${Currency.formatPrice(precioFinal)}${descPorcentaje>0?` <span class='product-detail-old-price'>${Currency.formatPrice(prod.precio)}</span> <span class='product-detail-discount'>-${descPorcentaje}%</span>`:''}</div>
           ${qtySelector}
           ${variantes}
-          <button class="btn-add-cart btn-add-cart--primary" id="addToCartBtn">AÑADIR AL CARRITO</button>
-          <div class="product-detail-description">${prod.descripcion}</div>
-          <div class="product-detail-dates">Creado: ${new Date(prod.created_at).toLocaleDateString()} | Modificado: ${new Date(prod.modified_at).toLocaleDateString()}</div>
+            <button class="btn-add-cart btn-add-cart--primary" id="addToCartBtn" ${!canAddProduct(prod, getMinimumQuantity(prod)) ? "disabled" : ""}>${available ? `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}` : (isStockControlled(prod) && getAvailabilityLabel(prod) === "Agotado" ? "AGOTADO" : "NO DISPONIBLE")}</button>
+            <div class="product-detail-description">${escapeHtml(prod.descripcion || "")}</div>
+            ${productNotesHTML}
+            <div class="product-detail-dates">${(prod.created_at || prod.fecha_creacion) ? `Creado: ${new Date(prod.created_at || prod.fecha_creacion).toLocaleDateString()}` : ""}${(prod.modified_at || prod.fecha_actualizacion) ? ` | Modificado: ${new Date(prod.modified_at || prod.fecha_actualizacion).toLocaleDateString()}` : ""}</div>
         </div>
       </div>
       
@@ -1169,14 +1420,17 @@ function showProductDetail(
   const qtyPlusBtn = detailPage.querySelector("#qtyPlus");
   const addToCartBtn = detailPage.querySelector("#addToCartBtn");
 
-  let detailQty = 1;
+  let detailQty = getMinimumQuantity(prod);
   const syncQtyUI = () => {
     if (detailQtySpan) detailQtySpan.textContent = detailQty;
+    if (qtyMinusBtn) qtyMinusBtn.disabled = detailQty <= getMinimumQuantity(prod);
+    if (qtyPlusBtn) qtyPlusBtn.disabled = getAvailableStock(prod) < detailQty + 1;
+    if (addToCartBtn) addToCartBtn.disabled = !canAddProduct(prod, detailQty);
   };
 
   if (qtyMinusBtn) {
     qtyMinusBtn.addEventListener("click", () => {
-      if (detailQty > 1) {
+      if (detailQty > getMinimumQuantity(prod)) {
         detailQty--;
         syncQtyUI();
       }
@@ -1184,13 +1438,30 @@ function showProductDetail(
   }
   if (qtyPlusBtn) {
     qtyPlusBtn.addEventListener("click", () => {
-      detailQty++;
-      syncQtyUI();
+      if (getAvailableStock(prod) >= detailQty + 1) {
+        detailQty++;
+        syncQtyUI();
+      }
     });
   }
   if (addToCartBtn) {
-    addToCartBtn.addEventListener("click", () => addToCart(prod.id, precioFinal, detailQty));
+    addToCartBtn.addEventListener("click", () => {
+      addToCart(prod.id, precioFinal, detailQty);
+      syncQtyUI();
+    });
   }
+  detailPage.querySelectorAll("[data-product-image-index]").forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      const selectedImage = productImages[Number(thumb.dataset.productImageIndex)];
+      const mainImage = detailPage.querySelector("#productDetailMainImage");
+      if (!selectedImage || !mainImage) return;
+      mainImage.src = productImageUrl(selectedImage);
+      detailPage.querySelectorAll(".product-detail-thumb-button").forEach((button) => {
+        button.classList.toggle("active", button === thumb);
+      });
+    });
+  });
+  syncQtyUI();
 
   // Navegación con pushState
   if (!fromPopState) {
@@ -1207,6 +1478,112 @@ function showProductDetail(
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "auto" });
     });
+  }
+}
+
+function showPackDetail(id, { replaceState = false, fromPopState = false } = {}) {
+  const pack = allPacks.find((entry) => entry.id === id);
+  if (!pack) return;
+
+  if (!fromPopState) {
+    savedScrollPosition = window.scrollY;
+    lastListScroll = window.scrollY;
+    scrollPositions[currentCategory] = window.scrollY;
+  }
+
+  document.querySelector("main").style.display = "none";
+  document.querySelector(".hero") && (document.querySelector(".hero").style.display = "none");
+  document.querySelector("footer").style.display = "none";
+  document.getElementById("productDrawerOverlay").style.display = "none";
+  const detailPage = document.getElementById("product-detail-page");
+  detailPage.style.display = "flex";
+  requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: fromPopState ? "auto" : "smooth" }));
+
+  const images = getPackImages(pack);
+  const salePrice = getPackSalePrice(pack);
+  const originalPrice = Number(pack.precio ?? 0);
+  const discount = originalPrice > salePrice && originalPrice > 0
+    ? Math.round((originalPrice - salePrice) / originalPrice * 100)
+    : 0;
+  const thumbs = images.map((image, index) =>
+    `<button type="button" class="product-detail-thumb-button ${index === 0 ? "active" : ""}" data-pack-image-index="${index}" aria-label="Ver imagen ${index + 1} de ${escapeHtml(pack.nombre)}"><img src="${productImageUrl(image)}" alt="" class="product-detail-thumb" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';"></button>`,
+  ).join("");
+  const features = getPackFeatures(pack);
+  const includedProducts = Array.isArray(pack.productos) ? pack.productos : [];
+  const includedItems = includedProducts.map((item) => {
+    const itemId = typeof item === "string" ? item : (item?.id || item?.productId);
+    const product = allProducts.find((entry) => entry.id === itemId);
+    const name = typeof item === "object" ? (item.nombre || product?.nombre || itemId) : (product?.nombre || item);
+    const quantity = typeof item === "object" && item.cantidad ? ` × ${item.cantidad}` : "";
+    return `<li>${escapeHtml(name)}${quantity}</li>`;
+  }).join("");
+
+  detailPage.innerHTML = `
+    <div class="product-detail-wrapper">
+      <div class="amazon-detail-layout">
+        <div class="left-column">
+          <img id="packDetailMainImage" src="${productImageUrl(images[0] || "")}" alt="${escapeHtml(pack.nombre)}" class="product-detail-image" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          <div class="product-detail-thumbs">${thumbs}</div>
+        </div>
+        <div class="right-column">
+          <nav class="product-detail-breadcrumbs">Inicio / Packs / ${escapeHtml(pack.nombre)}</nav>
+          <h2 class="product-detail-title">${escapeHtml(pack.nombre)}</h2>
+          <div class="product-detail-tags">${pack.top ? '<span class="product-detail-tag best-seller">Destacado</span>' : ""}${pack.nuevo ? '<span class="product-detail-tag nuevo">Nuevo</span>' : ""}${discount ? `<span class="product-detail-tag oferta">-${discount}%</span>` : ""}</div>
+          <div class="product-detail-price">${Currency.formatPrice(salePrice)}${discount ? ` <span class="product-detail-old-price">${Currency.formatPrice(originalPrice)}</span>` : ""}</div>
+          <div class="product-detail-qty">
+            <span>Cantidad:</span>
+            <button type="button" id="packQtyMinus" class="product-detail-qty-btn" aria-label="Reducir cantidad" disabled>-</button>
+            <span id="packDetailQty">1</span>
+            <button type="button" id="packQtyPlus" class="product-detail-qty-btn" aria-label="Aumentar cantidad">+</button>
+          </div>
+          <button type="button" class="btn-add-cart btn-add-cart--primary" id="addPackToCartBtn" ${isPackAvailable(pack) ? "" : "disabled"}>AÑADIR PACK AL CARRITO</button>
+          <div class="product-detail-description">${escapeHtml(pack.descripcion || "")}</div>
+          ${features.length ? `<section class="pack-detail-features"><h3>Características</h3><ul>${features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul></section>` : ""}
+          ${includedItems ? `<section class="pack-detail-features"><h3>Incluye</h3><ul>${includedItems}</ul></section>` : ""}
+        </div>
+      </div>
+      <div class="product-detail-footer"><button class="btn-back" onclick="history.back()">← Volver</button></div>
+    </div>
+  `;
+
+  let quantity = 1;
+  const quantityLabel = detailPage.querySelector("#packDetailQty");
+  const minusButton = detailPage.querySelector("#packQtyMinus");
+  const plusButton = detailPage.querySelector("#packQtyPlus");
+  const syncQuantity = () => {
+    quantityLabel.textContent = String(quantity);
+    minusButton.disabled = quantity <= 1;
+  };
+  minusButton.addEventListener("click", () => {
+    if (quantity > 1) quantity--;
+    syncQuantity();
+  });
+  plusButton.addEventListener("click", () => {
+    quantity++;
+    syncQuantity();
+  });
+  detailPage.querySelector("#addPackToCartBtn").addEventListener("click", () => {
+    addPackToCart(pack.id, salePrice, quantity);
+  });
+  detailPage.querySelectorAll("[data-pack-image-index]").forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      const selectedImage = images[Number(thumb.dataset.packImageIndex)];
+      const mainImage = detailPage.querySelector("#packDetailMainImage");
+      if (!selectedImage || !mainImage) return;
+      mainImage.src = productImageUrl(selectedImage);
+      detailPage.querySelectorAll(".product-detail-thumb-button").forEach((button) => {
+        button.classList.toggle("active", button === thumb);
+      });
+    });
+  });
+
+  if (!fromPopState) {
+    const packState = { type: "pack", packId: id, scrollPos: savedScrollPosition };
+    if (replaceState || history.state?.type === "pack") {
+      history.replaceState(packState, "", `/packs/${encodeURIComponent(id)}`);
+    } else {
+      history.pushState(packState, "", `/packs/${encodeURIComponent(id)}`);
+    }
   }
 }
 

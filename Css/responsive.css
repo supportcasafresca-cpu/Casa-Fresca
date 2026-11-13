@@ -113,7 +113,10 @@
     }
     .logo {
         order: 1;
-        font-size: 1.3rem;
+    }
+    .logo img {
+        width: 56px;
+        height: 56px;
     }
     .nav-icons {
         order: 2;

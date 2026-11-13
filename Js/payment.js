@@ -152,7 +152,7 @@ function updateOrderSummary() {
 
         return `
             <tr>
-                <td><strong>${item.nombre}</strong></td>
+                <td><strong>${escapeHtml(item.nombre)}</strong>${item.isPack || item.type === 'pack' ? ' <span class="cart-pack-badge">Pack</span>' : ''}</td>
                 <td>x${item.qty}</td>
                 <td style="font-weight: bold; color: var(--primary-red);">${Currency.formatPrice(itemTotal)}</td>
             </tr>
@@ -213,6 +213,8 @@ async function processPayment(e) {
             // Formatear artículos para el backend
             compras: currentCart.map(item => ({
                 id: item.id,
+                type: item.isPack || item.type === 'pack' ? 'pack' : 'product',
+                isPack: Boolean(item.isPack || item.type === 'pack'),
                 name: item.nombre,
                 quantity: item.qty,
                 unitPrice: item.precioVenta
@@ -604,7 +606,8 @@ function validateCartBeforeCheckout() {
         return false;
     }
 
-    if (!Array.isArray(allProducts) || allProducts.length === 0) {
+    if ((!Array.isArray(allProducts) || allProducts.length === 0)
+        && (!Array.isArray(allPacks) || allPacks.length === 0)) {
         showPaymentNotification('Los productos no están disponibles en este momento.', 'error');
         return false;
     }
@@ -620,13 +623,24 @@ function validateCartBeforeCheckout() {
             return acc;
         }
 
-        const product = allProducts.find((p) => p.id === item.id);
-        const currentPrice = product ? getCurrentProductSalePrice(product) : Number(item.precioVenta ?? item.precio ?? 0);
+        const isPack = Boolean(item.isPack || item.type === 'pack');
+        const catalogItem = isPack
+            ? allPacks.find((pack) => pack.id === item.id)
+            : allProducts.find((product) => product.id === item.id);
+        const currentPrice = catalogItem
+            ? (isPack ? getPackSalePrice(catalogItem) : getCurrentProductSalePrice(catalogItem))
+            : Number(item.precioVenta ?? item.precio ?? 0);
         const quantity = Number(item.qty || 0);
-        const isAvailable = product && product.disponibilidad !== false;
+        const isAvailable = isPack
+            ? Boolean(catalogItem && isPackAvailable(catalogItem))
+            : Boolean(catalogItem
+                && catalogItem.disponibilidad !== false
+                && catalogItem.activo !== false
+                && quantity >= getMinimumQuantity(catalogItem)
+                && hasProductStock(catalogItem, quantity));
         const priceChanged = Number(item.precioVenta) !== currentPrice;
 
-        if (quantity <= 0) {
+        if (!Number.isInteger(quantity) || quantity <= 0) {
             hasRemovedItems = true;
             return acc;
         }
@@ -635,23 +649,32 @@ function validateCartBeforeCheckout() {
             unavailableProducts.push(item.nombre || 'Producto desconocido');
             // Keep item but mark as unavailable
             const normalizedItem = {
-                ...(product || item),
+                ...(catalogItem || item),
                 qty: quantity,
                 precioVenta: currentPrice,
                 disponible: false,
-                precioAnterior: priceChanged ? Number(item.precioVenta) : null
+                precioAnterior: priceChanged ? Number(item.precioVenta) : null,
+                isPack,
+                ...(isPack ? { type: 'pack' } : {}),
             };
             acc.push(normalizedItem);
             hasRemovedItems = true;
             return acc;
         }
 
-        const normalizedItem = { ...product, qty: quantity, precioVenta: currentPrice, disponible: true };
+        const normalizedItem = {
+            ...catalogItem,
+            ...(isPack ? { imagenes: getPackImages(catalogItem), type: 'pack' } : {}),
+            qty: quantity,
+            precioVenta: currentPrice,
+            disponible: true,
+            isPack,
+        };
         acc.push(normalizedItem);
 
         if (priceChanged) {
             priceChangedProducts.push({
-                nombre: product.nombre,
+                nombre: catalogItem.nombre,
                 precioAnterior: Number(item.precioVenta),
                 precioNuevo: currentPrice
             });
