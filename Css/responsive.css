@@ -31,7 +31,23 @@
 /* Header responsive - tablet */
 @media (max-width: 900px) {
     :root {
-        --header-height: 84px;
+        --header-height: 140px;
+    }
+
+    .logo img {
+        width: 124px;
+        height: 104px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1000px) {
+    .packs-grid {
+        grid-auto-columns: minmax(240px, 42%);
+        gap: 18px;
+    }
+
+    .packs-section {
+        padding: 20px;
     }
 }
 
@@ -96,7 +112,7 @@
 /* 2 FILAS EN MÓVILES */
 @media (max-width: 600px) {
     :root {
-        --header-height: 122px;
+        --header-height: 192px;
     }
     .top-strip p {
         font-size: 0.65rem;
@@ -115,8 +131,8 @@
         order: 1;
     }
     .logo img {
-        width: 56px;
-        height: 56px;
+        width: 90px;
+        height: 76px;
     }
     .nav-icons {
         order: 2;
@@ -142,6 +158,38 @@
         width: 100%;
         flex-grow: 1;
         margin: 8px 0 0;
+    }
+    .packs-section {
+        margin-bottom: 24px;
+        padding: 16px;
+        border-radius: 14px;
+    }
+    .packs-grid {
+        grid-auto-columns: minmax(240px, 86%);
+        gap: 16px;
+        padding-bottom: 12px;
+        scroll-snap-type: x mandatory;
+    }
+    .packs-carousel-wrap .carousel-arrow {
+        display: none;
+    }
+    .pack-card-media {
+        aspect-ratio: 16 / 9;
+    }
+    .pack-card-content {
+        padding: 16px;
+    }
+    .pack-title {
+        font-size: 1.05rem;
+    }
+    .pack-card-actions {
+        gap: 8px;
+    }
+    .pack-details-button,
+    .pack-card-actions .btn-add-cart {
+        padding-left: 9px;
+        padding-right: 9px;
+        font-size: 0.78rem;
     }
     .hero-slider {
         height: 30vh;

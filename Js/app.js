@@ -319,31 +319,31 @@ function renderPacks() {
     const features = getPackFeatures(pack);
     return `
       <article class="product-card pack-card">
-        ${pack.top ? '<span class="pack-badge">Destacado</span>' : ""}
-        ${pack.nuevo ? '<span class="pack-badge pack-badge--new">Nuevo</span>' : ""}
-        ${discount > 0 ? `<div class="badge-oferta">-${discount}%</div>` : ""}
-        <img src="${productImageUrl(image)}" alt="${escapeHtml(pack.nombre)}" class="product-image" data-pack-detail="${escapeHtml(pack.id)}" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
-        <div class="product-category">Pack</div>
-        <h3 class="product-title">${escapeHtml(pack.nombre)}</h3>
-        <p class="pack-description">${escapeHtml(pack.descripcion || "")}</p>
-        ${features.length ? `<ul class="pack-features">${features.slice(0, 3).map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>` : ""}
-        <div class="product-price">${discount ? `<span class="old-price">${Currency.formatPrice(price)}</span> ` : ""}${Currency.formatPrice(salePrice)}</div>
-        <button class="btn-add-cart" type="button" data-pack-add="${escapeHtml(pack.id)}">AÑADIR PACK AL CARRITO</button>
+        <div class="pack-card-media">
+          ${pack.top ? '<span class="pack-badge">Destacado</span>' : ""}
+          ${pack.nuevo ? '<span class="pack-badge pack-badge--new">Nuevo</span>' : ""}
+          ${discount > 0 ? `<div class="badge-oferta">-${discount}%</div>` : ""}
+          <img src="${productImageUrl(image)}" alt="${escapeHtml(pack.nombre)}" class="pack-image" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+        </div>
+        <div class="pack-card-content">
+          <div class="product-category">PACK ESPECIAL</div>
+          <h3 class="pack-title">${escapeHtml(pack.nombre)}</h3>
+          ${pack.descripcion ? `<p class="pack-description">${escapeHtml(pack.descripcion)}</p>` : ""}
+          ${features.length ? `<ul class="pack-features">${features.slice(0, 3).map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>` : ""}
+          <div class="pack-card-bottom">
+            <div class="product-price">${discount ? `<span class="old-price">${Currency.formatPrice(price)}</span> ` : ""}${Currency.formatPrice(salePrice)}</div>
+            <div class="pack-card-actions">
+              <button class="pack-details-button" type="button" data-pack-detail="${escapeHtml(pack.id)}">Ver detalles</button>
+              <button class="btn-add-cart" type="button" data-pack-add="${escapeHtml(pack.id)}">Añadir pack</button>
+            </div>
+          </div>
+        </div>
       </article>
     `;
   }).join("");
 
-  grid.querySelectorAll("[data-pack-detail]").forEach((image) => {
-    image.addEventListener("click", () => showPackDetail(image.dataset.packDetail));
-    image.tabIndex = 0;
-    image.setAttribute("role", "button");
-    image.setAttribute("aria-label", `Ver detalles de ${image.alt}`);
-    image.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        showPackDetail(image.dataset.packDetail);
-      }
-    });
+  grid.querySelectorAll("[data-pack-detail]").forEach((button) => {
+    button.addEventListener("click", () => showPackDetail(button.dataset.packDetail));
   });
   grid.querySelectorAll("[data-pack-add]").forEach((button) => {
     button.addEventListener("click", () => {

@@ -62,7 +62,7 @@
             <div class="nav-container">
                 <div class="menu-icon"><i class="fas fa-bars"></i></div>
                 <div class="logo" id="siteLogo" style="cursor: pointer;" tabindex="0" role="button" aria-label="Casa Fresca - Ir al inicio">
-                    <img src="Img/logo.png" alt="" width="68" height="68">
+                    <img src="Img/logo.png" alt="" width="150" height="126">
                 </div>
                 <div class="search-bar">
                     <input type="text" id="searchInput"
@@ -157,7 +157,11 @@
                     <h2 class="section-title"><i class="fas fa-gift"></i> Packs y Combos</h2>
                     <span class="deals-heading-sub">Combos especiales para ti</span>
                 </div>
-                <div class="packs-grid" id="packsGrid"></div>
+                <div class="carousel-wrap packs-carousel-wrap">
+                    <button class="carousel-arrow carousel-arrow--prev" data-target="packsGrid" aria-label="Ver packs anteriores"><i class="fas fa-chevron-left"></i></button>
+                    <div class="packs-grid" id="packsGrid" role="region" aria-label="Packs disponibles" tabindex="0"></div>
+                    <button class="carousel-arrow carousel-arrow--next" data-target="packsGrid" aria-label="Ver más packs"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </section>
 
             <div class="store-layout">
