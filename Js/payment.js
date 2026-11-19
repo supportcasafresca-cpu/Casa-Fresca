@@ -372,28 +372,13 @@ function showPaymentNotification(message, type = 'info') {
 
 // Función para obtener datos del usuario
 async function gatherUserData() {
-    try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (!res.ok) throw new Error('Error obteniendo datos de IP');
-
-        const data = await res.json();
-        return {
-            ip: data.ip || 'Desconocido',
-            country: data.country_name || 'Desconocido',
-            city: data.city || 'Desconocido',
-            region: data.region || 'Desconocido',
-            org: data.org || 'Desconocido'
-        };
-    } catch (error) {
-        console.error('Error obteniendo datos del usuario:', error);
-        return {
-            ip: 'Desconocido',
-            country: 'Desconocido',
-            city: 'Desconocido',
-            region: 'Desconocido',
-            org: 'Desconocido'
-        };
-    }
+    return {
+        ip: null,
+        country: 'Desconocido',
+        city: 'Desconocido',
+        region: 'Desconocido',
+        org: 'Desconocido'
+    };
 }
 
 
@@ -700,6 +685,20 @@ function validateCartBeforeCheckout() {
     if (unavailableProducts.length > 0) {
         const nombres = unavailableProducts.join(', ');
         showPaymentNotification(`No puedes proceder: ${nombres} ya no están disponibles. Elimínalos del carrito.`, 'error');
+        return false;
+    }
+
+    const minimumOrderTotal = Number(window.CASA_FRESCA_CONFIG.minimumOrderTotal);
+    if (!Number.isFinite(minimumOrderTotal) || minimumOrderTotal <= 0) {
+        throw new Error('El mínimo del pedido no está configurado correctamente.');
+    }
+    const cartTotal = cleanedCart.reduce((total, item) => total + Number(item.precioVenta) * Number(item.qty), 0);
+    if (cartTotal < minimumOrderTotal) {
+        const remaining = minimumOrderTotal - cartTotal;
+        showPaymentNotification(
+            `El pedido mínimo es ${Currency.formatPrice(minimumOrderTotal)}. Añade ${Currency.formatPrice(remaining)} para continuar.`,
+            'error'
+        );
         return false;
     }
 

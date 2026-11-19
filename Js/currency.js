@@ -6,10 +6,8 @@ const Currency = (function() {
 
     // State
     let currentCurrency = 'USD'; // 'EUR' or 'USD'
-    let userCountry = null;
     let isInitialized = false;
     const STORAGE_KEY = 'casafresca_currency';
-    const IBAN_COUNTRIES_KEY = 'casafresca_iban_countries';
     let changeCallbacks = [];
 
     // Currency symbols and formatting
@@ -17,42 +15,6 @@ const Currency = (function() {
         'EUR': { symbol: '€', position: 'prefix', space: true },
         'USD': { symbol: '$', position: 'prefix', space: true }
     };
-
-    // Load IBAN countries through the Casa Fresca backend.
-    async function loadIbanCountries() {
-        try {
-            const data = await window.CASA_FRESCA_CONFIG.fetchJson('/api/pay');
-            return data.pay?.iban_countries || [];
-        } catch (error) {
-            console.warn('Could not load IBAN countries, using fallback:', error);
-            // Fallback list
-            return [
-                "Alemania", "Andorra", "Austria", "Bélgica", "Chipre", "Croacia",
-                "Eslovaquia", "Eslovenia", "España", "Estonia", "Finlandia",
-                "Francia", "Grecia", "Irlanda", "Italia", "Letonia", "Lituania",
-                "Luxemburgo", "Malta", "Mónaco", "Montenegro", "Países Bajos",
-                "Portugal", "San Marino", "Suiza", "Ciudad del Vaticano"
-            ];
-        }
-    }
-
-    // Detect user country via ipapi.co
-    async function detectUserCountry() {
-        try {
-            const response = await fetch('https://ipapi.co/json/');
-            if (!response.ok) throw new Error('Failed to detect country');
-            const data = await response.json();
-            return data.country_name || 'Unknown';
-        } catch (error) {
-            console.warn('Could not detect user country:', error);
-            return 'Unknown';
-        }
-    }
-
-    // Determine default currency based on country
-    function determineDefaultCurrency(country, ibanCountries) {
-        return ibanCountries.includes(country) ? 'EUR' : 'USD';
-    }
 
     // Format price with currency symbol
     function formatPrice(amount) {
@@ -176,21 +138,11 @@ const Currency = (function() {
         if (isInitialized) return;
         
         try {
-            // Load saved preference first
             const savedCurrency = localStorage.getItem(STORAGE_KEY);
-            
-            // Load IBAN countries
-            const ibanCountries = await loadIbanCountries();
-            localStorage.setItem(IBAN_COUNTRIES_KEY, JSON.stringify(ibanCountries));
-            
-            // Detect user country
-            userCountry = await detectUserCountry();
-            
-            // Determine currency: saved preference > geo-detection > default USD
             if (savedCurrency && (savedCurrency === 'EUR' || savedCurrency === 'USD')) {
                 currentCurrency = savedCurrency;
             } else {
-                currentCurrency = determineDefaultCurrency(userCountry, ibanCountries);
+                currentCurrency = 'USD';
                 localStorage.setItem(STORAGE_KEY, currentCurrency);
             }
             
@@ -202,7 +154,7 @@ const Currency = (function() {
                 reRenderPrices();
             });
             
-            console.log(`Currency initialized: ${currentCurrency} (Country: ${userCountry})`);
+            console.log(`Currency initialized: ${currentCurrency}`);
             
         } catch (error) {
             console.error('Currency initialization failed:', error);

@@ -1,0 +1,130 @@
+/* Features */
+.features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 50px;
+    text-align: center;
+    background: var(--bg-white);
+    padding: 30px 10px;
+    border-radius: 10px;
+}
+
+.feature-item {
+    flex: 1;
+    min-width: 250px;
+    margin: 15px;
+}
+
+.feature-item i {
+    font-size: 2.5rem;
+    color: #6cbf43;
+    margin-bottom: 15px;
+}
+
+/* Footer estilo Amazon */
+footer {
+    background: #232f3e;
+    color: #fff;
+    margin-top: 50px;
+}
+
+.footer-back-top {
+    background: #37475a;
+    text-align: center;
+    padding: 14px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: background 0.2s;
+}
+
+.footer-back-top:hover {
+    background: #3f4b5c;
+}
+
+.footer-columns {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.footer-col h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #fff;
+}
+
+.footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-col ul li {
+    font-size: 0.85rem;
+    color: #d5d9dd;
+    cursor: pointer;
+    transition: color 0.2s;
+    width: fit-content;
+}
+
+.footer-col ul li:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.footer-col--brand .footer-tagline {
+    font-size: 0.85rem;
+    color: #d5d9dd;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.socials {
+    display: flex;
+    gap: 14px;
+}
+
+.socials i {
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+.socials i:hover {
+    color: var(--accent-orange);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+    padding: 18px 20px 26px;
+    font-size: 0.8rem;
+    color: #b7bec7;
+}
+
+.footer-bottom p {
+    margin: 3px 0;
+}
+
+@media (max-width: 850px) {
+    .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .footer-columns {
+        grid-template-columns: 1fr;
+        gap: 26px;
+    }
+}
+

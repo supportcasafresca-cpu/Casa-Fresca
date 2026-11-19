@@ -1,5 +1,6 @@
 window.CASA_FRESCA_CONFIG = Object.freeze({
   backendUrl: "https://backend-casafresca.onrender.com",
+  minimumOrderTotal: 10,
   apiUrl(path) {
     const backendUrl = this.backendUrl.trim().replace(/\/+$/, "");
     if (!backendUrl) {

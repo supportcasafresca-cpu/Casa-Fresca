@@ -1,0 +1,182 @@
+/* ============ OFERTAS Y MÁS VENDIDOS (ESTILO AMAZON) ============ */
+.deals-section,
+.bestsellers-section {
+    margin: 10px 0 40px;
+    background: var(--bg-white);
+    border-radius: 12px;
+    padding: 22px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.deals-section {
+    background: linear-gradient(180deg, #fff6f5 0%, var(--bg-white) 130px);
+    border: 1px solid rgba(227, 52, 47, 0.12);
+}
+
+.deals-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.deals-title,
+.bestsellers-title {
+    margin-bottom: 0;
+    font-size: 1.5rem;
+}
+
+.deals-title i {
+    color: var(--primary-red);
+    margin-right: 6px;
+}
+
+.bestsellers-title i {
+    color: var(--accent-orange);
+    margin-right: 6px;
+}
+
+.deals-heading-sub {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.carousel-wrap {
+    position: relative;
+}
+
+.deals-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(190px, 220px);
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-red) var(--bg-light);
+}
+
+.deals-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.deals-grid::-webkit-scrollbar-thumb {
+    background: rgba(227, 52, 47, 0.35);
+    border-radius: 10px;
+}
+
+.deals-grid .product-card {
+    scroll-snap-align: start;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-white);
+    border: 1px solid #eee;
+    color: var(--primary-red);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.carousel-arrow:hover {
+    background: var(--primary-red);
+    color: #fff;
+}
+
+.carousel-arrow--prev {
+    left: -14px;
+}
+
+.carousel-arrow--next {
+    right: -14px;
+}
+
+/* Ribbons / Badges sobre las tarjetas */
+.badge-bestseller {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--accent-orange);
+    color: #1a1a1a;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 5px;
+    letter-spacing: 0.3px;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.badge-nuevo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #007bff;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 5px;
+    letter-spacing: 0.3px;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Cuenta regresiva estilo "oferta flash" */
+.deal-countdown {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-red);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 8px;
+    border-radius: 6px;
+    margin: 6px 0 10px;
+    letter-spacing: 0.2px;
+}
+
+.deal-countdown i {
+    font-size: 0.7rem;
+}
+
+.deal-countdown .countdown-time {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 600px) {
+    .carousel-arrow {
+        display: none;
+    }
+
+    .deals-grid {
+        grid-auto-columns: minmax(150px, 168px);
+        gap: 10px;
+    }
+
+    .deals-section,
+    .bestsellers-section {
+        padding: 16px 12px;
+        border-radius: 10px;
+    }
+
+    .deals-heading {
+        margin-bottom: 12px;
+    }
+}
+

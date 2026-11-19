@@ -2,7 +2,7 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <base href="/">
+        <base href="./">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- SEO BÁSICO -->
@@ -48,27 +48,38 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-        <link rel="stylesheet" href="Css/style.css">
+        <link rel="stylesheet" href="Css/1-foundation.css">
+        <link rel="stylesheet" href="Css/2-layout.css">
+        <link rel="stylesheet" href="Css/3-shop.css">
+        <link rel="stylesheet" href="Css/4-features.css">
+        <link rel="stylesheet" href="Css/5-ui-shared.css?v=2">
+        <link rel="stylesheet" href="Css/6-checkout.css">
+        <link rel="stylesheet" href="Css/7-ui-overrides.css">
+        <link rel="stylesheet" href="Css/8-promo-panels.css">
+        <link rel="stylesheet" href="Css/9-seasonal-carousel.css?v=2">
+        <link rel="stylesheet" href="Css/10-promo-rails.css">
+        <link rel="stylesheet" href="Css/11-category-rail.css">
         <link rel="stylesheet" href="Css/responsive.css">
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
+        <a class="skip-link" href="#catalogo">Saltar al catálogo</a>
 
         <header>
             <div class="top-strip">
-                <p><i class="fas fa-truck"></i> Domicilio gratis en la ciudad · <i class="fas fa-box"></i> Entrega en 2 días · <i class="fas fa-hand-holding-usd"></i> Reciba y luego pague</p>
+                <p><i class="fas fa-truck" aria-hidden="true"></i> Domicilio gratis en la ciudad · <i class="fas fa-box" aria-hidden="true"></i> Entrega en 2 días · <i class="fas fa-hand-holding-usd" aria-hidden="true"></i> Reciba y luego pague</p>
             </div>
             <div class="nav-container">
-                <div class="menu-icon"><i class="fas fa-bars"></i></div>
+                <button class="menu-icon" type="button" aria-label="Abrir categorías"><i class="fas fa-bars" aria-hidden="true"></i></button>
                 <div class="logo" id="siteLogo" style="cursor: pointer;" tabindex="0" role="button" aria-label="Casa Fresca - Ir al inicio">
-                    <img src="Img/logo.png" alt="" width="150" height="126">
+                    <img src="Img/logo.png" alt="" width="86" height="72">
                 </div>
                 <div class="search-bar">
-                    <input type="text" id="searchInput"
-                        placeholder="Buscar productos..." autocomplete="off">
+                    <input type="search" id="searchInput" name="search"
+                        aria-label="Buscar productos" placeholder="Buscar productos…" autocomplete="off">
                     <i class="fas fa-search"
-                        style="color: var(--primary-red);"></i>
+                        style="color: var(--primary-red);" aria-hidden="true"></i>
                     <div class="search-suggestions" id="searchSuggestions"
                         role="listbox"
                         aria-label="Sugerencias de búsqueda"></div>
@@ -78,89 +89,77 @@
                         <span id="currencySymbol">$</span>
                         <span id="currencyCode">USD</span>
                     </div>
-                    <div class="cart-icon" id="openCartBtn">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span id="cartCount">0</span>
-                    </div>
+                    <button class="cart-icon" id="openCartBtn" type="button" aria-label="Abrir carrito" aria-controls="cartModal" aria-expanded="false">
+                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                        <span id="cartCount" aria-live="polite" aria-atomic="true">0</span>
+                    </button>
                 </div>
             </div>
+            <nav class="categories-nav" aria-label="Categorías principales">
+                <ul class="categories-list" id="categoriesList"></ul>
+            </nav>
         </header>
 
-        <section class="hero hero-slider" id="heroSlider">
-            <div class="slider-container">
-                <div class="slider-slide slide-1 active">
-                    <div class="slider-gradient"></div>
-                    <div class="hero-overlay">
-                        <h1>Casa Fresca<br><span class="slide-subtitle">Calidad y frescura que inspiran confianza</span></h1>
-                        <button class="btn-slider"
-                            onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">EXPLORAR PRODUCTOS</button>
-                    </div>
-                </div>
-                <div class="slider-slide slide-2">
-                    <div class="slider-gradient"></div>
-                    <div class="hero-overlay">
-                        <h1>Casa Fresca<br><span class="slide-subtitle">El sabor del hogar, siempre a tu alcance</span></h1>
-                        <button class="btn-slider"
-                            onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">EXPLORAR PRODUCTOS</button>
-                    </div>
-                </div>
-                <div class="slider-slide slide-3">
-                    <div class="slider-gradient"></div>
-                    <div class="hero-overlay">
-                        <h1>Casa Fresca<br><span class="slide-subtitle">Compromiso, frescura y el mejor servicio</span></h1>
-                        <button class="btn-slider"
-                            onclick="document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'})">EXPLORAR PRODUCTOS</button>
-                    </div>
-                </div>
-            </div>
-            <button class="slider-arrow slider-arrow--prev" id="sliderPrev" aria-label="Anterior">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="slider-arrow slider-arrow--next" id="sliderNext" aria-label="Siguiente">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <div class="slider-dots" id="sliderDots">
-                <span class="dot active" data-slide="0"></span>
-                <span class="dot" data-slide="1"></span>
-                <span class="dot" data-slide="2"></span>
-            </div>
+        <section class="seasonal-carousel-container" id="seasonalCarousel" aria-label="Ofertas y categorías destacadas">
+            <div class="seasonal-carousel-wrapper" id="seasonalCarouselWrapper"></div>
+            <button class="carousel-btn carousel-btn-prev" id="seasonalPrev" aria-label="Tarjetas anteriores"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-btn carousel-btn-next" id="seasonalNext" aria-label="Tarjetas siguientes"><i class="fas fa-chevron-right"></i></button>
         </section>
 
         <main id="catalogo">
 
-            <section class="deals-section hidden" id="offersSection">
-                <div class="deals-heading">
-                    <h2 class="section-title deals-title"><i class="fas fa-bolt"></i> Ofertas por Tiempo Limitado</h2>
-                    <span class="deals-heading-sub">¡Aprovecha antes de que se acaben!</span>
-                </div>
-                <div class="carousel-wrap">
-                    <button class="carousel-arrow carousel-arrow--prev" data-target="offersGrid" aria-label="Ver ofertas anteriores"><i class="fas fa-chevron-left"></i></button>
-                    <div class="deals-grid" id="offersGrid"></div>
-                    <button class="carousel-arrow carousel-arrow--next" data-target="offersGrid" aria-label="Ver más ofertas"><i class="fas fa-chevron-right"></i></button>
+            <section class="best-sellers-section hidden" id="bestSellersSection">
+                <div class="best-sellers-container">
+                    <div class="best-sellers-scroll" id="bestSellersGrid"></div>
                 </div>
             </section>
 
-            <section class="bestsellers-section hidden" id="bestSellersSection">
-                <div class="deals-heading">
-                    <h2 class="section-title bestsellers-title"><i class="fas fa-crown"></i> Los Más Vendidos</h2>
-                    <span class="deals-heading-sub">Los favoritos de nuestros clientes</span>
-                </div>
-                <div class="carousel-wrap">
-                    <button class="carousel-arrow carousel-arrow--prev" data-target="bestSellersGrid" aria-label="Ver anteriores"><i class="fas fa-chevron-left"></i></button>
-                    <div class="deals-grid" id="bestSellersGrid"></div>
-                    <button class="carousel-arrow carousel-arrow--next" data-target="bestSellersGrid" aria-label="Ver más"><i class="fas fa-chevron-right"></i></button>
+            <section class="flash-deals-section hidden" id="offersSection">
+                <div class="flash-deals-container">
+                    <div class="flash-deals-header">
+                        <div>
+                            <p class="flash-deals-kicker"><i class="fas fa-bolt"></i> Ofertas relámpago</p>
+                            <h2>Antes de que se acaben</h2>
+                        </div>
+                        <div class="flash-deals-timer" id="offersTimer">Termina en --:--:--</div>
+                    </div>
+                    <div class="flash-deals-scroll" id="offersGrid"></div>
                 </div>
             </section>
 
-            <section class="packs-section hidden" id="packsSection">
-                <div class="deals-heading">
-                    <h2 class="section-title"><i class="fas fa-gift"></i> Packs y Combos</h2>
-                    <span class="deals-heading-sub">Combos especiales para ti</span>
+            <section class="packs-section hidden" id="packsSection" aria-labelledby="packsTitle">
+                <div class="category-card-container">
+                    <div class="category-card-header packs-header">
+                        <div>
+                            <p class="category-card-kicker"><i class="fas fa-box-open" aria-hidden="true"></i> Combos de la casa</p>
+                            <h2 class="category-card-title" id="packsTitle">Packs Disponibles</h2>
+                        </div>
+                        <div class="packs-header-tools">
+                            <span class="category-card-count" id="packsCount"></span>
+                            <div class="pack-rail-controls" aria-label="Navegar por los packs">
+                                <button type="button" id="packsPrev" aria-label="Packs anteriores">
+                                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" id="packsNext" aria-label="Packs siguientes">
+                                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="packs-grid" id="packsGrid" role="list" aria-label="Packs disponibles" tabindex="0"></div>
                 </div>
-                <div class="carousel-wrap packs-carousel-wrap">
-                    <button class="carousel-arrow carousel-arrow--prev" data-target="packsGrid" aria-label="Ver packs anteriores"><i class="fas fa-chevron-left"></i></button>
-                    <div class="packs-grid" id="packsGrid" role="region" aria-label="Packs disponibles" tabindex="0"></div>
-                    <button class="carousel-arrow carousel-arrow--next" data-target="packsGrid" aria-label="Ver más packs"><i class="fas fa-chevron-right"></i></button>
+            </section>
+
+            <section class="categories-circle-section" id="categoriesCircleSection">
+                <div class="categories-circle-container">
+                    <div class="categories-circle-header">
+                        <div class="categories-circle-heading">
+                            <p class="categories-circle-kicker"><i class="fas fa-star"></i> Novedades por categoría</p>
+                            <h2 class="categories-circle-title">Explora nuestras categorías</h2>
+                        </div>
+                        <p class="categories-circle-subtitle">Toca una categoría para ver sus productos</p>
+                    </div>
+                    <div class="categories-circle-scroll" id="categoriesCircleScroll"></div>
                 </div>
             </section>
 
@@ -250,7 +249,8 @@
                 <footer class="cart-footer">
                     <div class="cart-total">Total: <span
                             id="cartTotalPrice">0.00</span></div>
-                    <button class="btn-checkout" onclick="openPaymentFromCart()">PAGAR AHORA</button>
+                    <p class="minimum-order-notice" id="minimumOrderNotice" aria-live="polite"></p>
+                    <button class="btn-checkout" id="checkoutButton" type="button" onclick="openPaymentFromCart()" disabled>PEDIR AHORA</button>
                 </footer>
             </aside>
         </div>
@@ -285,27 +285,24 @@
             <div class="payment-container">
                 <div class="payment-header">
                     <h2 style="color: var(--primary-red);"><i
-                            class="fas fa-file-invoice-dollar"></i> Finalizar
-                        Compra</h2>
+                            class="fas fa-file-invoice-dollar" aria-hidden="true"></i> Completar pedido</h2>
                     <button class="close-modal"
                         onclick="hidePaymentSection()">&times;</button>
                 </div>
 
                 <div class="security-notice-container">
                     <div class="security-notice">
-                        <i class="fas fa-shield-alt"
+                        <i class="fas fa-box-open" aria-hidden="true"
                             style="font-size: 2rem; color: #2A9D8F;"></i>
                         <div class="security-notice-content">
                             <h3
-                                style="font-size: 1.1rem; margin-bottom: 5px;"><i
-                                    class="fas fa-lock"></i> Compra Segura</h3>
+                                style="font-size: 1.1rem; margin-bottom: 5px;">Entrega primero, paga después</h3>
                             <p
                                 style="font-size: 0.85rem; color: var(--text-muted);">
-                                Esta tienda no cuenta con pasarela de pago
-                                integrada. Tus datos bancarios no son necesarios
-                                en este paso.
-                                Al confirmar, nos pondremos en contacto para
-                                coordinar el pago y la entrega.
+                                Casa Fresca no utiliza pasarelas de pago en línea.
+                                Recibirás tu pedido primero y pagarás después de
+                                recibirlo; coordinaremos contigo los detalles.
+                                No introduzcas datos bancarios en esta página.
                             </p>
                         </div>
                     </div>
@@ -425,7 +422,7 @@
 
         <script src="Js/config.js?v=20261112-2"></script>
         <script src="Js/currency.js"></script>
-        <script src="Js/app.js"></script>
+        <script src="Js/app.js?v=4"></script>
         <script src="Js/payment.js"></script>
     </body>
 </html>

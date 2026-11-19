@@ -6,6 +6,21 @@ let cart = [];
 let lastListScroll = 0; // Guardar scroll previo al entrar en detalle de producto
 let scrollPositions = {}; // Guardar posiciones de scroll por categoría
 let savedScrollPosition = 0; // Variable para restauración más robusta de scroll
+let detailFloatingPanel = null;
+let detailFloatingOnChange = null;
+
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
+const navigationEntry = performance.getEntriesByType("navigation")[0];
+if (navigationEntry?.type === "reload") {
+  window.addEventListener(
+    "pageshow",
+    () => window.scrollTo({ top: 0, left: 0, behavior: "auto" }),
+    { once: true },
+  );
+}
 
 // Bloqueo de scroll de fondo (pila de bloqueos para manejar modales anidados)
 let bodyScrollLockCount = 0;
@@ -162,9 +177,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchPacks();
   loadCartFromStorage();
 
-  // INICIALIZAR SLIDER
-  initSlider();
-
   initRouter();
 
   // Escuchar cambios de moneda para re-renderizar precios
@@ -181,6 +193,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderBestSellers();
       renderOffers();
       renderPacks();
+      renderSeasonalCarousel();
       
       // Actualizar carrito
       updateCart();
@@ -220,9 +233,11 @@ async function fetchProducts() {
     }
 
     renderCategories(allProducts);
+    renderCategoriesCircle(allProducts);
     renderProducts(allProducts);
     renderBestSellers();
     renderOffers();
+    renderSeasonalCarousel();
 
     // LÓGICA DE REDIRECCIÓN (Para que funcione el link del backend)
     // Al terminar de cargar, revisamos si hay un ID en el hash (ej: #prod_001)
@@ -256,7 +271,153 @@ async function fetchPacks() {
   }
 }
 
+function renderSeasonalCarousel() {
+  const wrapper = document.getElementById("seasonalCarouselWrapper");
+  if (!wrapper) return;
+
+  const cards = [
+    { category: "Viandas y Verduras", kicker: "Temporada fresca", title: "Verduras del día", subtitle: "Selección natural y lista para cocinar", icon: "fa-seedling", background: "linear-gradient(135deg,#eaf8ee 0%,#d9f1df 55%,#f8efd8 100%)", accent: "#3e7a50" },
+    { category: "Confitura", kicker: "Para compartir", title: "Confituras y sabores", subtitle: "Dulce, variedad y momentos especiales", icon: "fa-cookie-bite", background: "linear-gradient(135deg,#fff6ec 0%,#f9e0c9 55%,#fdebd4 100%)", accent: "#b85f32" },
+    { category: "Lácteos", kicker: "Nutrición diaria", title: "Lácteos esenciales", subtitle: "Sabor y frescura para cada mañana", icon: "fa-cheese", background: "linear-gradient(135deg,#eef4ff 0%,#ddeafa 55%,#eee6f8 100%)", accent: "#496eaa" },
+    { category: "Despensa", kicker: "Lo esencial", title: "Despensa con sabor", subtitle: "Productos básicos para la cocina", icon: "fa-basket-shopping", background: "linear-gradient(135deg,#fff7ee 0%,#f5e4d2 55%,#f4dac8 100%)", accent: "#9a603b" },
+    { category: "Bebidas no alcohólicas", kicker: "Para refrescar", title: "Bebidas frescas", subtitle: "Sabor y energía para cada momento", icon: "fa-wine-bottle", background: "linear-gradient(135deg,#fff8df 0%,#ffe8b8 55%,#fce3ce 100%)", accent: "#d17a24" },
+    { category: "Cárnicos y Embutidos", kicker: "Especiales del día", title: "Cárnicos y embutidos", subtitle: "Calidad y tradición para cada mesa", icon: "fa-drumstick-bite", background: "linear-gradient(135deg,#fff5f1 0%,#f2ddd5 55%,#f7ecdf 100%)", accent: "#9a553d" },
+    { category: "Aseo y Belleza", kicker: "Hogar cuidado", title: "Aseo y belleza", subtitle: "Bienestar para ti y tu familia", icon: "fa-pump-soap", background: "linear-gradient(135deg,#edf8f4 0%,#d7eee7 55%,#edf5e3 100%)", accent: "#477d69" },
+  ];
+
+  const available = cards.map((card) => {
+    const products = allProducts
+      .filter((product) => product.disponibilidad !== false
+        && product.activo !== false
+        && normalizeText(product.categoria) === normalizeText(card.category))
+      .slice(0, 4);
+    return { ...card, products };
+  }).filter((card) => card.products.length);
+
+  wrapper.innerHTML = available.map((card) => {
+    const items = card.products.map((product) => {
+      const price = getProductSalePrice(product);
+      return `
+        <button type="button" class="seasonal-item" data-seasonal-product="${escapeHtml(product.id)}">
+          <span class="seasonal-item-image">
+            ${product.oferta || Number(product.descuento || 0) > 0 ? '<span class="seasonal-item-badge">Oferta</span>' : ""}
+            ${product.nuevo ? '<span class="seasonal-item-badge seasonal-item-badge-new">Nuevo</span>' : ""}
+            <img src="${productImageUrl(product.imagenes?.[0] || "")}" alt="${escapeHtml(product.nombre)}" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          </span>
+          <span class="seasonal-item-body">
+            <span class="seasonal-item-title">${escapeHtml(product.nombre)}</span>
+            <span class="seasonal-item-price">${Currency.formatPrice(price)}</span>
+          </span>
+        </button>
+      `;
+    }).join("");
+
+    return `
+      <article class="seasonal-slide" style="--seasonal-bg:${card.background};--seasonal-accent:${card.accent}">
+        <div class="seasonal-card">
+          <header class="seasonal-card-header">
+            <p class="seasonal-card-kicker"><i class="fas ${card.icon}"></i> ${escapeHtml(card.kicker)}</p>
+            <h2 class="seasonal-card-title">${escapeHtml(card.title)}</h2>
+            <p class="seasonal-card-subtitle">${escapeHtml(card.subtitle)}</p>
+          </header>
+          <div class="seasonal-card-grid">${items}</div>
+          <button type="button" class="seasonal-card-link" data-seasonal-category="${escapeHtml(card.category)}">Ver ${escapeHtml(card.title.toLowerCase())} <i class="fas fa-chevron-right"></i></button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  wrapper.querySelectorAll("[data-seasonal-product]").forEach((button) => {
+    button.addEventListener("click", () => showProductDetail(button.dataset.seasonalProduct));
+  });
+  wrapper.querySelectorAll("[data-seasonal-category]").forEach((button) => {
+    button.addEventListener("click", () => navigateToCategory(button.dataset.seasonalCategory));
+  });
+
+  const prev = document.getElementById("seasonalPrev");
+  const next = document.getElementById("seasonalNext");
+  if (prev) prev.onclick = () => wrapper.scrollBy({ left: -306, behavior: "smooth" });
+  if (next) next.onclick = () => wrapper.scrollBy({ left: 306, behavior: "smooth" });
+}
+
 // 2. Renderizar Productos
+function getProductCardCartControlHTML(product) {
+  const quantity = getCartQuantityForProduct(product.id);
+  const minimum = getMinimumQuantity(product);
+
+  if (quantity <= 0) {
+    const available = canAddProduct(product, minimum);
+    const label = available
+      ? (minimum > 1 ? `Añadir (${minimum} mín.)` : "Añadir al carrito")
+      : "No disponible";
+
+    return `
+      <button class="add-to-cart" type="button" data-product-add-id="${escapeHtml(product.id)}" ${available ? "" : "disabled"}>
+        <i class="fas fa-cart-plus" aria-hidden="true"></i>
+        <span>${label}</span>
+      </button>
+    `;
+  }
+
+  const canIncrease = canAddProduct(product, 1);
+  const removeAtMinimum = quantity <= minimum;
+  return `
+    <div class="quantity-counter" role="group" aria-label="Cantidad en el carrito">
+      <button class="quantity-btn decrease-btn ${removeAtMinimum ? "trash-icon" : ""}" type="button" data-product-quantity-decrease aria-label="${removeAtMinimum ? "Eliminar del carrito" : "Reducir cantidad"}">
+        <i class="fas fa-${removeAtMinimum ? "trash-alt" : "minus"}" aria-hidden="true"></i>
+      </button>
+      <span class="quantity-display" aria-live="polite">${quantity}</span>
+      <button class="quantity-btn increase-btn" type="button" data-product-quantity-increase aria-label="Aumentar cantidad" ${canIncrease ? "" : "disabled"}>
+        <i class="fas fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+  `;
+}
+
+function bindProductCardCartControl(card, product) {
+  const control = card.querySelector(".product-card-cart-control");
+  if (!control) return;
+
+  const addButton = control.querySelector("[data-product-add-id]");
+  if (addButton) {
+    addButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      addToCart(product.id, getProductSalePrice(product), getMinimumQuantity(product));
+    });
+  }
+
+  const decreaseButton = control.querySelector("[data-product-quantity-decrease]");
+  if (decreaseButton) {
+    decreaseButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (getCartQuantityForProduct(product.id) <= getMinimumQuantity(product)) {
+        removeFromCart(product.id);
+      } else {
+        changeQty(product.id, -1);
+      }
+    });
+  }
+
+  const increaseButton = control.querySelector("[data-product-quantity-increase]");
+  if (increaseButton) {
+    increaseButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      changeQty(product.id, 1);
+    });
+  }
+}
+
+function refreshProductCardCartControls() {
+  document.querySelectorAll(".product-card[data-product-card-id]").forEach((card) => {
+    const product = allProducts.find((entry) => entry.id === card.dataset.productCardId);
+    const control = card.querySelector(".product-card-cart-control");
+    if (!product || !control) return;
+
+    control.innerHTML = getProductCardCartControlHTML(product);
+    bindProductCardCartControl(card, product);
+  });
+}
+
 function renderProducts(productsToRender) {
   productsGrid.innerHTML = "";
 
@@ -270,29 +431,50 @@ function renderProducts(productsToRender) {
   }
 
   availableProducts.forEach((prod) => {
-    let precioFinal = prod.precio;
-    let precioHtml = Currency.formatPrice(precioFinal);
-    let badgeHtml = "";
-
-    if (prod.oferta || prod.descuento > 0) {
-      let descPorcentaje = prod.descuento > 0 ? prod.descuento : 10;
-      precioFinal = prod.precio - prod.precio * (descPorcentaje / 100);
-      precioHtml = `<span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}`;
-      badgeHtml = `<div class="badge-oferta">-${descPorcentaje}%</div>`;
-    }
+    let precioFinal = getProductSalePrice(prod);
+    const tieneDescuento = prod.oferta || Number(prod.descuento || 0) > 0;
+    const descPorcentaje = Number(prod.descuento || 0) > 0
+      ? Number(prod.descuento)
+      : (prod.oferta ? 10 : 0);
+    const stockLow = isStockControlled(prod)
+      && Number(prod.stock || 0) > 0
+      && Number(prod.stock || 0) < 10;
+    const minimum = getMinimumQuantity(prod);
+    const available = canAddProduct(prod);
+    const productNote = productInfoById.get(String(prod.id));
 
     const imageSrc = prod.imagenes?.[0] || "";
     const card = document.createElement("div");
     card.className = "product-card";
+    card.dataset.productCardId = prod.id;
     card.innerHTML = `
-            ${badgeHtml}
-            <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
-            <div class="product-category">${escapeHtml(prod.categoria)}</div>
-            <h3 class="product-title">${escapeHtml(prod.nombre)}</h3>
-            ${isStockControlled(prod) ? `<div class="product-stock ${getAvailabilityLabel(prod).startsWith("Stock bajo") ? "low" : ""}">${escapeHtml(getAvailabilityLabel(prod))}</div>` : ""}
-            <div class="product-price">${precioHtml}</div>
-            <button class="btn-add-cart" data-product-add-id="${escapeHtml(prod.id)}" onclick="addToCart('${prod.id}', ${precioFinal})" ${!canAddProduct(prod) ? "disabled" : ""}>${prod.disponibilidad === false || prod.activo === false ? "NO DISPONIBLE" : (isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "AGOTADO" : `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}`)}</button>
+            <div class="product-badges">
+              ${tieneDescuento ? `<span class="badge oferta"><i class="fas fa-tag"></i> Oferta</span>` : ""}
+              ${stockLow ? '<span class="badge stock-bajo">Stock bajo</span>' : ""}
+              ${prod.mas_vendido ? '<span class="badge mas-vendido">Más vendido</span>' : ""}
+              ${prod.nuevo ? '<span class="badge nuevo">Nuevo</span>' : ""}
+              ${!available ? '<span class="badge agotado">Agotado</span>' : ""}
+            </div>
+            <div class="product-image-container ${!available ? "unavailable" : ""}">
+              <img src="${productImageUrl(imageSrc)}" alt="${escapeHtml(prod.nombre)}" class="product-image" width="320" height="240" loading="lazy" data-product-detail="${escapeHtml(prod.id)}" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+            </div>
+            <div class="product-info">
+              <div class="product-category">${escapeHtml(prod.categoria)}</div>
+              <h3 class="product-title" data-product-detail="${escapeHtml(prod.id)}">${escapeHtml(prod.nombre)}</h3>
+              ${isStockControlled(prod) ? `<div class="product-stock ${stockLow ? "low" : ""}">${escapeHtml(getAvailabilityLabel(prod))}</div>` : '<div class="shipping-info"><i class="fas fa-check-circle"></i> Disponible</div>'}
+              <div class="price-container">
+                ${tieneDescuento ? `<span class="discount-percent">${descPorcentaje}%</span><span class="original-price">${Currency.formatPrice(prod.precio)}</span>` : ""}
+                <span class="current-price">${Currency.formatPrice(precioFinal)}</span>
+              </div>
+              ${minimum > 1 ? `<div class="minimum-purchase">Compra mínima: ${minimum}</div>` : ""}
+              <div class="product-card-cart-control">${getProductCardCartControlHTML(prod)}</div>
+              ${productNote ? `<div class="product-info-banner" role="note"><i class="fas fa-info-circle" aria-hidden="true"></i><span>${escapeHtml(productNote)}</span></div>` : ""}
+            </div>
         `;
+    card.querySelectorAll("[data-product-detail]").forEach((element) => {
+      element.addEventListener("click", () => showProductDetail(prod.id));
+    });
+    bindProductCardCartControl(card, prod);
     productsGrid.appendChild(card);
   });
 }
@@ -310,31 +492,40 @@ function renderPacks() {
   }
 
   section.classList.remove("hidden");
+  const count = document.getElementById("packsCount");
+  if (count) count.textContent = `${packs.length} pack${packs.length === 1 ? "" : "s"}`;
   grid.innerHTML = packs.map((pack) => {
-    const price = Number(pack.precio ?? 0);
-    const salePrice = getPackSalePrice(pack);
     const images = getPackImages(pack);
-    const image = images[0] || "";
-    const discount = price > 0 ? Math.round((price - salePrice) / price * 100) : 0;
-    const features = getPackFeatures(pack);
+    const features = getPackFeatures(pack).slice(0, 3);
+    const salePrice = getPackSalePrice(pack);
+    const discount = Number(pack.descuento) > 0 ? Number(pack.descuento) : (pack.oferta ? 10 : 0);
+    const isBestSeller = Boolean(pack.top || pack.mas_vendido || pack["más_vendido"]);
+    const packId = escapeHtml(pack.id);
+    const packName = escapeHtml(pack.nombre || "Pack Casa Fresca");
+    const originalPrice = Number(pack.precio) || 0;
     return `
-      <article class="product-card pack-card">
+      <article class="product-card pack-card" role="listitem">
         <div class="pack-card-media">
-          ${pack.top ? '<span class="pack-badge">Destacado</span>' : ""}
+          ${isBestSeller ? '<span class="pack-badge pack-badge--top">Más vendido</span>' : ""}
           ${pack.nuevo ? '<span class="pack-badge pack-badge--new">Nuevo</span>' : ""}
-          ${discount > 0 ? `<div class="badge-oferta">-${discount}%</div>` : ""}
-          <img src="${productImageUrl(image)}" alt="${escapeHtml(pack.nombre)}" class="pack-image" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          ${discount ? `<span class="badge-oferta">-${discount}%</span>` : ""}
+          <img src="${productImageUrl(images[0] || "")}" alt="${packName}" class="pack-image" width="320" height="200" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
         </div>
         <div class="pack-card-content">
-          <div class="product-category">PACK ESPECIAL</div>
-          <h3 class="pack-title">${escapeHtml(pack.nombre)}</h3>
+          <div class="product-category">Casa Fresca · Pack</div>
+          <h3 class="pack-title">${packName}</h3>
           ${pack.descripcion ? `<p class="pack-description">${escapeHtml(pack.descripcion)}</p>` : ""}
-          ${features.length ? `<ul class="pack-features">${features.slice(0, 3).map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>` : ""}
+          ${features.length ? `<ul class="pack-features">${features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>` : ""}
           <div class="pack-card-bottom">
-            <div class="product-price">${discount ? `<span class="old-price">${Currency.formatPrice(price)}</span> ` : ""}${Currency.formatPrice(salePrice)}</div>
+            <div class="product-price">
+              ${discount ? `<span class="old-price">${Currency.formatPrice(originalPrice)}</span>` : ""}
+              <span class="current-price">${Currency.formatPrice(salePrice)}</span>
+            </div>
             <div class="pack-card-actions">
-              <button class="pack-details-button" type="button" data-pack-detail="${escapeHtml(pack.id)}">Ver detalles</button>
-              <button class="btn-add-cart" type="button" data-pack-add="${escapeHtml(pack.id)}">Añadir pack</button>
+              <button type="button" class="pack-details-button" data-pack-detail="${packId}" aria-label="Ver detalles de ${packName}">Detalles</button>
+              <button type="button" class="btn-add-cart" data-pack-add="${packId}" aria-label="Añadir ${packName} al carrito">
+                <i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir
+              </button>
             </div>
           </div>
         </div>
@@ -347,11 +538,42 @@ function renderPacks() {
   });
   grid.querySelectorAll("[data-pack-add]").forEach((button) => {
     button.addEventListener("click", () => {
-      const pack = allPacks.find((entry) => entry.id === button.dataset.packAdd);
+      const pack = packs.find((item) => String(item.id) === button.dataset.packAdd);
       if (pack) addPackToCart(pack.id, getPackSalePrice(pack));
     });
   });
+
+  const previous = document.getElementById("packsPrev");
+  const next = document.getElementById("packsNext");
+  const scrollPackRail = (direction) => {
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    grid.scrollBy({ left: direction * Math.max(grid.clientWidth * 0.85, 240), behavior });
+  };
+  grid.onscroll = updatePackRailControls;
+  if (previous) {
+    previous.onclick = () => scrollPackRail(-1);
+  }
+  if (next) {
+    next.onclick = () => scrollPackRail(1);
+  }
+  updatePackRailControls();
 }
+
+function updatePackRailControls() {
+  const grid = document.getElementById("packsGrid");
+  const previous = document.getElementById("packsPrev");
+  const next = document.getElementById("packsNext");
+  if (!grid || !previous || !next) return;
+
+  const maxScroll = Math.max(0, grid.scrollWidth - grid.clientWidth);
+  const hasOverflow = maxScroll > 1;
+  previous.classList.toggle("hidden", !hasOverflow);
+  next.classList.toggle("hidden", !hasOverflow);
+  previous.disabled = !hasOverflow || grid.scrollLeft <= 1;
+  next.disabled = !hasOverflow || grid.scrollLeft >= maxScroll - 1;
+}
+
+window.addEventListener("resize", updatePackRailControls);
 
 function getProductSalePrice(product) {
   if (!product || typeof product.precio !== "number") {
@@ -375,9 +597,16 @@ function renderBestSellers() {
   const grid = document.getElementById("bestSellersGrid");
   if (!section || !grid) return;
 
-  const bestSellers = allProducts.filter(
+  const productBestSellers = allProducts.filter(
     (p) => p.mas_vendido && p.disponibilidad !== false && p.activo !== false,
   );
+  const packBestSellers = allPacks.filter(
+    (pack) => (pack.top || pack.mas_vendido || pack["más_vendido"]) && isPackAvailable(pack),
+  );
+  const bestSellers = [
+    ...productBestSellers.map((item) => ({ type: "product", item })),
+    ...packBestSellers.map((item) => ({ type: "pack", item })),
+  ];
 
   if (bestSellers.length === 0) {
     section.classList.add("hidden");
@@ -387,25 +616,48 @@ function renderBestSellers() {
 
   section.classList.remove("hidden");
   grid.innerHTML = bestSellers
-    .map((prod) => {
-      const precioFinal = getProductSalePrice(prod);
-      const tieneDescuento = prod.oferta || prod.descuento > 0;
-      const precioHtml = tieneDescuento
-        ? `<span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}`
-        : Currency.formatPrice(precioFinal);
-      const imageSrc = prod.imagenes?.[0] || "";
+    .map((entry, index) => {
+      const isPack = entry.type === "pack";
+      const prod = entry.item;
+      const precioFinal = isPack ? getPackSalePrice(prod) : getProductSalePrice(prod);
+      const tieneDescuento = prod.oferta || Number(prod.descuento || 0) > 0;
+      const priceValue = isPack ? prod.precio : prod.precio;
+      const imageSrc = isPack ? (getPackImages(prod)[0] || "") : (prod.imagenes?.[0] || "");
       return `
-        <div class="product-card">
-          <div class="badge-bestseller"><i class="fas fa-crown"></i> Más vendido</div>
-          <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
-          <div class="product-category">${prod.categoria}</div>
-          <h3 class="product-title">${prod.nombre}</h3>
-          <div class="product-price">${precioHtml}</div>
-          <button class="btn-add-cart" data-product-add-id="${escapeHtml(prod.id)}" onclick="addToCart('${prod.id}', ${precioFinal})" ${!canAddProduct(prod) ? "disabled" : ""}>${isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "AGOTADO" : `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}`}</button>
-        </div>
+        <article class="best-seller-card" style="animation-delay:${index * 0.05}s" data-best-${isPack ? "pack" : "product"}="${escapeHtml(prod.id)}">
+          <div class="best-seller-image-container">
+            <span class="best-seller-badge"><i class="fas fa-fire"></i> ${isPack ? "PACK TOP" : "TOP"}</span>
+            <img src="${productImageUrl(imageSrc)}" alt="${escapeHtml(prod.nombre)}" class="best-seller-image" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          </div>
+          <div class="best-seller-info">
+            <div class="best-seller-category">${escapeHtml(isPack ? (prod.categoria || "Pack") : prod.categoria)}</div>
+            <h3 class="best-seller-title">${escapeHtml(prod.nombre)}</h3>
+            <div class="best-seller-price">
+              <span class="best-seller-price-current">${Currency.formatPrice(precioFinal)}</span>
+              ${tieneDescuento ? `<span class="best-seller-price-original">${Currency.formatPrice(priceValue)}</span>` : ""}
+            </div>
+            ${isPack ? "" : `<button class="best-seller-cta" type="button" data-best-add="${escapeHtml(prod.id)}">${isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "Agotado" : "Añadir"}</button>`}
+          </div>
+        </article>
       `;
     })
     .join("");
+
+  grid.querySelectorAll("[data-best-product]").forEach((card) => {
+    card.addEventListener("click", (event) => {
+      if (!event.target.closest("[data-best-add]")) showProductDetail(card.dataset.bestProduct);
+    });
+  });
+  grid.querySelectorAll("[data-best-pack]").forEach((card) => {
+    card.addEventListener("click", () => showPackDetail(card.dataset.bestPack));
+  });
+  grid.querySelectorAll("[data-best-add]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const prod = allProducts.find((item) => item.id === button.dataset.bestAdd);
+      if (prod) addToCart(prod.id, getProductSalePrice(prod), getMinimumQuantity(prod));
+    });
+  });
 }
 
 // 2.c Panel "Ofertas por Tiempo Limitado" con cuenta regresiva
@@ -440,13 +692,11 @@ function startOffersCountdown() {
   if (offersCountdownInterval) clearInterval(offersCountdownInterval);
 
   offersCountdownInterval = setInterval(() => {
-    document.querySelectorAll(".countdown-time").forEach((el) => {
-      const id = el.dataset.productId;
-      if (!id) return;
-      const deadline = getOfferDeadline(id);
-      const remaining = deadline - Date.now();
-      el.textContent = formatCountdown(remaining);
-    });
+    const timer = document.getElementById("offersTimer");
+    if (!timer) return;
+    const firstOffer = allProducts.find((product) => product.oferta || Number(product.descuento || 0) > 0);
+    if (!firstOffer) return;
+    timer.textContent = `Termina en ${formatCountdown(getOfferDeadline(firstOffer.id) - Date.now())}`;
   }, 1000);
 }
 
@@ -471,21 +721,38 @@ function renderOffers() {
       const descPorcentaje = prod.descuento > 0 ? prod.descuento : 10;
       const precioFinal = getProductSalePrice(prod);
       const imageSrc = prod.imagenes?.[0] || "";
-      const deadline = getOfferDeadline(prod.id);
       return `
-        <div class="product-card">
-          <div class="badge-oferta">-${descPorcentaje}%</div>
-          <img src="${productImageUrl(imageSrc)}" alt="${prod.nombre}" class="product-image" onclick="showProductDetail('${prod.id}')" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
-          <div class="product-category">${prod.categoria}</div>
-          <h3 class="product-title">${prod.nombre}</h3>
-          <div class="deal-countdown"><i class="fas fa-clock"></i> Termina en: <span class="countdown-time" data-product-id="${prod.id}">${formatCountdown(deadline - Date.now())}</span></div>
-          <div class="product-price"><span class="old-price">${Currency.formatPrice(prod.precio)}</span> ${Currency.formatPrice(precioFinal)}</div>
-          <button class="btn-add-cart" data-product-add-id="${escapeHtml(prod.id)}" onclick="addToCart('${prod.id}', ${precioFinal})" ${!canAddProduct(prod) ? "disabled" : ""}>${isStockControlled(prod) && getAvailableStock(prod) < getMinimumQuantity(prod) ? "AGOTADO" : `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}`}</button>
-        </div>
+        <article class="flash-deal-card" data-flash-product="${escapeHtml(prod.id)}">
+          <div class="flash-deal-image-container">
+            <span class="flash-deal-badge">Flash</span>
+            <img src="${productImageUrl(imageSrc)}" alt="${escapeHtml(prod.nombre)}" class="flash-deal-image" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+          </div>
+          <div class="flash-deal-info">
+            <h3 class="flash-deal-title">${escapeHtml(prod.nombre)}</h3>
+            <div class="flash-deal-price">
+              <span class="flash-deal-price-current">${Currency.formatPrice(precioFinal)}</span>
+              <span class="flash-deal-price-original">${Currency.formatPrice(prod.precio)}</span>
+              <span class="flash-deal-discount">-${descPorcentaje}%</span>
+            </div>
+            <button class="flash-deal-cta" type="button" data-flash-add="${escapeHtml(prod.id)}" ${!canAddProduct(prod) ? "disabled" : ""}>Añadir rápido</button>
+          </div>
+        </article>
       `;
     })
     .join("");
 
+  grid.querySelectorAll("[data-flash-product]").forEach((card) => {
+    card.addEventListener("click", (event) => {
+      if (!event.target.closest("[data-flash-add]")) showProductDetail(card.dataset.flashProduct);
+    });
+  });
+  grid.querySelectorAll("[data-flash-add]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const prod = allProducts.find((item) => item.id === button.dataset.flashAdd);
+      if (prod) addToCart(prod.id, getProductSalePrice(prod), getMinimumQuantity(prod));
+    });
+  });
   startOffersCountdown();
 }
 
@@ -536,34 +803,75 @@ function renderCategories(products) {
   const categories = getUniqueCategories(products);
   categoryList.innerHTML = "";
   if (categoryListDrawer) categoryListDrawer.innerHTML = "";
+  const categoriesNav = document.getElementById("categoriesList");
+  if (categoriesNav) categoriesNav.innerHTML = "";
 
   // "Ver Todo" para sidebar normal
   const allItem = document.createElement("li");
   allItem.dataset.category = "all";
   allItem.className = "active";
+  allItem.tabIndex = 0;
+  allItem.setAttribute("role", "button");
   allItem.textContent = "Ver Todo";
   categoryList.appendChild(allItem);
+  if (categoriesNav) {
+    const navAll = document.createElement("li");
+    navAll.dataset.category = "all";
+    navAll.tabIndex = 0;
+    navAll.setAttribute("role", "button");
+    navAll.textContent = "Ver todo";
+    categoriesNav.appendChild(navAll);
+  }
 
   // "Ver Todo" para drawer - con icono
   const allItemDrawer = document.createElement("li");
   allItemDrawer.dataset.category = "all";
+  allItemDrawer.tabIndex = 0;
+  allItemDrawer.setAttribute("role", "button");
   allItemDrawer.className = "active";
-  allItemDrawer.innerHTML = '<i class="fas fa-th-large"></i> Ver Todo';
+  allItemDrawer.innerHTML = '<i class="fas fa-th-large" aria-hidden="true"></i> Ver Todo';
   categoryListDrawer.appendChild(allItemDrawer);
 
   categories.forEach((category) => {
     // Sidebar normal (sin icono)
     const li = document.createElement("li");
     li.dataset.category = category;
+    li.tabIndex = 0;
+    li.setAttribute("role", "button");
     li.textContent = category;
     categoryList.appendChild(li);
+    if (categoriesNav) {
+      const navLi = document.createElement("li");
+      navLi.dataset.category = category;
+      navLi.tabIndex = 0;
+      navLi.setAttribute("role", "button");
+      navLi.textContent = category;
+      categoriesNav.appendChild(navLi);
+    }
 
     // Drawer con icono
     const liDrawer = document.createElement("li");
     liDrawer.dataset.category = category;
+    liDrawer.tabIndex = 0;
+    liDrawer.setAttribute("role", "button");
     const iconClass = getCategoryIcon(category);
-    liDrawer.innerHTML = `<i class="fas ${iconClass}"></i> ${category}`;
+    liDrawer.innerHTML = `<i class="fas ${iconClass}" aria-hidden="true"></i> ${escapeHtml(category)}`;
     categoryListDrawer.appendChild(liDrawer);
+  });
+}
+
+function renderCategoriesCircle(products) {
+  const scroll = document.getElementById("categoriesCircleScroll");
+  if (!scroll) return;
+  const categories = getUniqueCategories(products);
+  scroll.innerHTML = categories.map((category) => `
+    <button type="button" class="category-circle-item" data-circle-category="${escapeHtml(category)}">
+      <span class="category-circle-image"><i class="fas ${getCategoryIcon(category)}" aria-hidden="true"></i></span>
+      <span class="category-circle-label">${escapeHtml(category)}</span>
+    </button>
+  `).join("");
+  scroll.querySelectorAll("[data-circle-category]").forEach((button) => {
+    button.addEventListener("click", () => navigateToCategory(button.dataset.circleCategory));
   });
 }
 
@@ -732,7 +1040,10 @@ function renderSearchSuggestions(suggestions, query) {
 
 function updateSearch(query) {
   const trimmed = String(query || "").trim();
+  const startingSearch = Boolean(trimmed) && !lastSearchQuery;
   lastSearchQuery = trimmed;
+
+  setHomepageChromeVisible(!trimmed && currentCategory === "all");
 
   const base = getCategoryProducts();
   const results = trimmed ? getSearchResults(trimmed) : base;
@@ -741,11 +1052,23 @@ function updateSearch(query) {
 
   const suggestions = trimmed ? results : getDefaultSuggestions();
   renderSearchSuggestions(suggestions, trimmed);
+  if (startingSearch) scrollToProductsArea();
 }
 
 function hideSearchSuggestions() {
   searchSuggestions.classList.remove("open");
   searchSuggestions.innerHTML = "";
+}
+
+function setHomepageChromeVisible(visible) {
+  document.body.classList.toggle("catalog-view", !visible);
+  const ids = ["seasonalCarousel", "bestSellersSection", "offersSection", "packsSection", "categoriesCircleSection"];
+  ids.forEach((id) => {
+    const element = id === "seasonalCarousel"
+      ? document.getElementById(id)
+      : document.getElementById(id);
+    if (element) element.style.display = visible ? "" : "none";
+  });
 }
 
 categoryList.addEventListener("click", (e) => {
@@ -754,6 +1077,27 @@ categoryList.addEventListener("click", (e) => {
     navigateToCategory(selectedCategory);
   }
 });
+
+const categoriesNav = document.getElementById("categoriesList");
+function activateCategoryWithKeyboard(event) {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const item = event.target.closest('li[role="button"][data-category]');
+  if (!item) return;
+  event.preventDefault();
+  item.click();
+}
+
+[categoryList, categoryListDrawer, categoriesNav].forEach((list) => {
+  if (list) list.addEventListener("keydown", activateCategoryWithKeyboard);
+});
+
+if (categoriesNav) {
+  categoriesNav.addEventListener("click", (event) => {
+    const item = event.target.closest("li[data-category]");
+    if (!item) return;
+    navigateToCategory(item.dataset.category);
+  });
+}
 
 // 3.b Drawer lateral de Categorías (menú hamburguesa)
 function openCategoryDrawer() {
@@ -853,10 +1197,6 @@ function addToCart(id, precioFinal, qty = 1) {
   }
 
   updateCart();
-
-  // Efecto visual rápido para el usuario
-  openCartBtn.style.transform = "scale(1.2)";
-  setTimeout(() => (openCartBtn.style.transform = "scale(1)"), 200);
   return true;
 }
 
@@ -880,8 +1220,6 @@ function addPackToCart(id, precioFinal, qty = 1) {
     });
   }
   updateCart();
-  openCartBtn.style.transform = "scale(1.2)";
-  setTimeout(() => (openCartBtn.style.transform = "scale(1)"), 200);
   return true;
 }
 
@@ -964,22 +1302,20 @@ function updateCart() {
   });
 
   cartTotalPrice.innerText = Currency.formatPrice(total);
-  refreshProductAddButtons();
-}
-
-function refreshProductAddButtons() {
-  document.querySelectorAll("[data-product-add-id]").forEach((button) => {
-    const product = allProducts.find((entry) => entry.id === button.dataset.productAddId);
-    if (!product) {
-      button.disabled = true;
-      return;
+  const minimumOrderTotal = Number(window.CASA_FRESCA_CONFIG.minimumOrderTotal);
+  const minimumOrderNotice = document.getElementById("minimumOrderNotice");
+  const checkoutButton = document.getElementById("checkoutButton");
+  if (minimumOrderNotice) {
+    if (total >= minimumOrderTotal) {
+      minimumOrderNotice.textContent = "";
+    } else if (cart.length === 0) {
+      minimumOrderNotice.textContent = `Pedido mínimo: ${Currency.formatPrice(minimumOrderTotal)}.`;
+    } else {
+      minimumOrderNotice.textContent = `Pedido mínimo: ${Currency.formatPrice(minimumOrderTotal)}. Añade ${Currency.formatPrice(minimumOrderTotal - total)} para continuar.`;
     }
-    const available = canAddProduct(product);
-    button.disabled = !available;
-    button.textContent = available
-      ? `AÑADIR${getMinimumQuantity(product) > 1 ? ` (MÍN. ${getMinimumQuantity(product)})` : " AL CARRITO"}`
-      : (isStockControlled(product) && getAvailableStock(product) < getMinimumQuantity(product) ? "AGOTADO" : "NO DISPONIBLE");
-  });
+  }
+  if (checkoutButton) checkoutButton.disabled = total < minimumOrderTotal;
+  refreshProductCardCartControls();
 }
 
 function validateCartItems(savedCart) {
@@ -1070,6 +1406,7 @@ function openCartDrawer() {
   cartModal.classList.add("open");
   cartDrawer.classList.add("open");
   cartModal.setAttribute("aria-hidden", "false");
+  openCartBtn.setAttribute("aria-expanded", "true");
   lockBodyScroll();
 }
 
@@ -1077,6 +1414,7 @@ function closeCartDrawer() {
   cartDrawer.classList.remove("open");
   cartModal.classList.remove("open");
   cartModal.setAttribute("aria-hidden", "true");
+  openCartBtn.setAttribute("aria-expanded", "false");
   unlockBodyScroll();
 }
 
@@ -1092,9 +1430,185 @@ function closeProductDrawer() {
   productDrawerOverlay.setAttribute("aria-hidden", "true");
 }
 
+function getBundleAdditionQuantity(product) {
+  const existingItem = cart.find(
+    (item) => item.id === product.id && !item.isPack,
+  );
+  return existingItem ? 1 : getMinimumQuantity(product);
+}
+
+function generateFrequentlyBoughtTogetherHTML(products) {
+  if (!Array.isArray(products) || products.length < 2) return "";
+
+  const total = products.reduce(
+    (sum, product) =>
+      sum +
+      getProductSalePrice(product) * getBundleAdditionQuantity(product),
+    0,
+  );
+  const canAdd = products.every((product) =>
+    canAddProduct(product, getBundleAdditionQuantity(product)),
+  );
+
+  return `
+    <section class="frequently-bought-together" aria-labelledby="frequentlyBoughtTitle">
+      <div class="fbt-heading">
+        <h3 id="frequentlyBoughtTitle">Comprados juntos habitualmente</h3>
+        <p>Completa tu compra con productos que combinan bien.</p>
+      </div>
+      <div class="fbt-items">
+        ${products.map((product) => {
+          const quantity = getBundleAdditionQuantity(product);
+          const minimum = getMinimumQuantity(product);
+          return `
+            <article class="fbt-item">
+              <img src="${productImageUrl(product.imagenes?.[0] || "")}" alt="${escapeHtml(product.nombre)}" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+              <div class="fbt-item-details">
+                <h4>${escapeHtml(product.nombre)}</h4>
+                <strong>${Currency.formatPrice(getProductSalePrice(product))}</strong>
+                <span>${quantity > 1 ? `Añade ${quantity} unidades` : "Añade 1 unidad"}${minimum > 1 && quantity === minimum ? ` · mínimo ${minimum}` : ""}</span>
+              </div>
+            </article>
+          `;
+        }).join("")}
+      </div>
+      <div class="fbt-footer">
+        <div class="fbt-total">
+          <span>Total del combo</span>
+          <strong>${Currency.formatPrice(total)}</strong>
+        </div>
+        <button type="button" class="fbt-add-button" id="addFrequentlyBoughtTogetherBtn" aria-describedby="fbtStatus" ${canAdd ? "" : "disabled"}>
+          Añadir combo al carrito
+        </button>
+      </div>
+      <p class="fbt-status" id="fbtStatus" aria-live="polite"></p>
+    </section>
+  `;
+}
+
+function addFrequentlyBoughtTogetherToCart(products) {
+  const status = document.getElementById("fbtStatus");
+  const additions = products.map((product) => ({
+    product,
+    quantity: getBundleAdditionQuantity(product),
+  }));
+  const unavailable = additions.find(
+    ({ product, quantity }) => !canAddProduct(product, quantity),
+  );
+
+  if (unavailable) {
+    if (status) {
+      status.textContent = `No hay unidades suficientes de ${unavailable.product.nombre}.`;
+    }
+    return false;
+  }
+
+  additions.forEach(({ product, quantity }) => {
+    const existingItem = cart.find(
+      (item) => item.id === product.id && !item.isPack,
+    );
+    if (existingItem) {
+      existingItem.qty += quantity;
+    } else {
+      cart.push({
+        ...product,
+        qty: quantity,
+        precioVenta: getProductSalePrice(product),
+        disponible: true,
+        precioAnterior: null,
+        isPack: false,
+      });
+    }
+  });
+
+  updateCart();
+  if (status) status.textContent = "Combo añadido al carrito.";
+  return true;
+}
+
+function removeProductDetailFloatingPanel() {
+  document.body.classList.remove("detail-floating-active");
+  if (detailFloatingOnChange) {
+    window.removeEventListener("scroll", detailFloatingOnChange);
+    window.removeEventListener("resize", detailFloatingOnChange);
+    detailFloatingOnChange = null;
+  }
+  if (detailFloatingPanel) {
+    detailFloatingPanel.remove();
+    detailFloatingPanel = null;
+  }
+}
+
+function initProductDetailFloatingPanel(product, mainAddButton) {
+  removeProductDetailFloatingPanel();
+  if (!product || !mainAddButton) return null;
+
+  const panel = document.createElement("aside");
+  panel.className = "detail-floating-panel";
+  panel.setAttribute("aria-label", "Acceso rápido para añadir al carrito");
+  panel.setAttribute("aria-hidden", "true");
+  panel.innerHTML = `
+    <div class="detail-floating-product">
+      <img class="detail-floating-image" src="${productImageUrl(product.imagenes?.[0] || "")}" alt="" onerror="this.onerror=null; this.src='${IMAGE_FALLBACK}';">
+      <div class="detail-floating-copy">
+        <strong class="detail-floating-title">${escapeHtml(product.nombre)}</strong>
+        <span class="detail-floating-price">${Currency.formatPrice(getProductSalePrice(product))}</span>
+      </div>
+    </div>
+    <button type="button" class="detail-floating-add" tabindex="-1">Añadir</button>
+  `;
+  document.body.appendChild(panel);
+  detailFloatingPanel = panel;
+
+  const floatingAddButton = panel.querySelector(".detail-floating-add");
+  floatingAddButton.addEventListener("click", () => mainAddButton.click());
+  floatingAddButton.setAttribute(
+    "aria-label",
+    `Añadir ${product.nombre} al carrito`,
+  );
+
+  const updateVisibility = () => {
+    const image = document.getElementById("productDetailMainImage");
+    const imageRect = image?.getBoundingClientRect();
+    const buttonRect = mainAddButton.getBoundingClientRect();
+    const headerHeight =
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
+      ) || 0;
+    const imageVisible = Boolean(
+      imageRect &&
+        imageRect.bottom > headerHeight &&
+        imageRect.top < window.innerHeight,
+    );
+    const buttonVisible =
+      buttonRect.bottom > headerHeight && buttonRect.top < window.innerHeight;
+    const visible =
+      window.innerWidth <= 900 && !imageVisible && !buttonVisible;
+
+    panel.classList.toggle("is-visible", visible);
+    panel.setAttribute("aria-hidden", String(!visible));
+    document.body.classList.toggle("detail-floating-active", visible);
+    floatingAddButton.tabIndex = visible ? 0 : -1;
+    floatingAddButton.disabled = mainAddButton.disabled;
+    floatingAddButton.textContent = mainAddButton.disabled
+      ? "No disponible"
+      : "Añadir";
+    if (!visible && document.activeElement === floatingAddButton) {
+      mainAddButton.focus({ preventScroll: true });
+    }
+  };
+
+  detailFloatingOnChange = updateVisibility;
+  window.addEventListener("scroll", updateVisibility, { passive: true });
+  window.addEventListener("resize", updateVisibility);
+  requestAnimationFrame(updateVisibility);
+  return floatingAddButton;
+}
+
 function hideProductDetail({ fromPopState = false } = {}) {
   // Oculta el detalle tipo Amazon y restaura el layout
   const detailPage = document.getElementById("product-detail-page");
+  removeProductDetailFloatingPanel();
   
   // Ocultar el detalle
   detailPage.style.display = "none";
@@ -1106,6 +1620,7 @@ function hideProductDetail({ fromPopState = false } = {}) {
     (document.querySelector(".hero").style.display = "");
   document.querySelector("footer").style.display = "";
   document.getElementById("productDrawerOverlay").style.display = "";
+  setHomepageChromeVisible(currentCategory === "all" && !String(searchInput?.value || "").trim());
 
   if (fromPopState) {
     // Forzar reflow para que el DOM recalcule alturas
@@ -1150,9 +1665,33 @@ function setActiveCategoryUI(category) {
       li.getAttribute("data-category") === category,
     );
   });
+  document.querySelectorAll(".categories-list li").forEach((li) => {
+    li.classList.toggle("active", li.dataset.category === category);
+  });
 }
 
-function navigateToCategory(category, { replaceState = false } = {}) {
+function scrollToProductsArea(behavior = "smooth") {
+  const productsArea = document.querySelector(".products-area");
+  if (!productsArea) return;
+
+  requestAnimationFrame(() => {
+    const headerHeight =
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
+      ) || 0;
+    const target = Math.max(
+      0,
+      window.scrollY + productsArea.getBoundingClientRect().top - headerHeight - 12,
+    );
+    scrollPositions[currentCategory] = target;
+    window.scrollTo({ top: target, behavior });
+  });
+}
+
+function navigateToCategory(
+  category,
+  { replaceState = false, scrollToCatalog = true } = {},
+) {
   // Guardar scroll actual de la categoría anterior
   if (currentCategory) {
     scrollPositions[currentCategory] = window.scrollY;
@@ -1160,7 +1699,14 @@ function navigateToCategory(category, { replaceState = false } = {}) {
   
   currentCategory = category || "all";
   setActiveCategoryUI(currentCategory);
+  setHomepageChromeVisible(currentCategory === "all" && !String(searchInput?.value || "").trim());
+  const productsTitle = document.querySelector(".products-area .section-title");
+  if (productsTitle) {
+    productsTitle.textContent =
+      currentCategory === "all" ? "Nuestros Productos" : currentCategory;
+  }
   updateSearch(searchInput.value);
+  if (scrollToCatalog) scrollToProductsArea();
 
   const hash =
     currentCategory === "all"
@@ -1198,6 +1744,10 @@ function handlePopState(event) {
 
   setActiveCategoryUI(currentCategory);
   updateSearch(searchInput.value);
+  const scrollTarget = scrollPositions[currentCategory] || 0;
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: scrollTarget, behavior: "auto" });
+  });
 }
 
 
@@ -1239,7 +1789,7 @@ function initRouter() {
     const categoryFromHash = decodeURIComponent(hashMatch[1]);
     navigateToCategory(categoryFromHash, { replaceState: true });
   } else {
-    navigateToCategory("all", { replaceState: true });
+    navigateToCategory("all", { replaceState: true, scrollToCatalog: false });
     const directId = initialHash.substring(1);
     if (directId) {
       const pack = allPacks.find((entry) => entry.id === decodeURIComponent(directId));
@@ -1273,7 +1823,7 @@ function goToHome() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Forzar navegación a la categoría "all" y limpiar el hash
-  navigateToCategory("all", { replaceState: true });
+  navigateToCategory("all", { replaceState: true, scrollToCatalog: false });
   history.replaceState({ type: "home" }, "", "/");
 }
 
@@ -1284,6 +1834,7 @@ function showProductDetail(
 ) {
   const prod = allProducts.find((p) => p.id === id);
   if (!prod) return;
+  removeProductDetailFloatingPanel();
 
   // Guarda scroll actual ANTES de ocultar cualquier elemento
   if (!fromPopState) {
@@ -1298,6 +1849,7 @@ function showProductDetail(
     (document.querySelector(".hero").style.display = "none");
   document.querySelector("footer").style.display = "none";
   document.getElementById("productDrawerOverlay").style.display = "none";
+  setHomepageChromeVisible(false);
 
   // Muestra el contenedor de detalle
   const detailPage = document.getElementById("product-detail-page");
@@ -1355,9 +1907,34 @@ function showProductDetail(
   // Obtener productos relacionados (misma categoría, excluyendo el actual)
   // con rotación diaria para variar las recomendaciones cada día
   const relatedPool = allProducts.filter(
-    (p) => p.categoria === prod.categoria && p.id !== prod.id && p.disponibilidad !== false,
+    (p) =>
+      p.categoria === prod.categoria &&
+      p.id !== prod.id &&
+      p.disponibilidad !== false &&
+      p.activo !== false,
   );
-  const relatedProducts = applyDailyOrder(relatedPool, `related_${prod.id}`).slice(0, 6);
+  const relatedProducts = applyDailyOrder(relatedPool, `related_${prod.id}`)
+    .filter((product) => canAddProduct(product))
+    .slice(0, 6);
+  const featuredBundleProducts = applyDailyOrder(
+    allProducts.filter(
+      (product) =>
+        product.id !== prod.id &&
+        product.categoria !== prod.categoria &&
+        (product.mas_vendido || product.nuevo || product.oferta),
+    ),
+    `frequently_bought_${prod.id}`,
+  );
+  const bundleSuggestions = [
+    ...new Map(
+      [...relatedProducts, ...featuredBundleProducts]
+        .filter((product) => canAddProduct(product))
+        .map((product) => [String(product.id), product]),
+    ).values(),
+  ].slice(0, 2);
+  const bundleProducts = [prod, ...bundleSuggestions];
+  const frequentlyBoughtTogetherHTML =
+    generateFrequentlyBoughtTogetherHTML(bundleProducts);
   
   const relatedProductsHTML = relatedProducts
     .map(p => {
@@ -1395,10 +1972,11 @@ function showProductDetail(
             <button class="btn-add-cart btn-add-cart--primary" id="addToCartBtn" ${!canAddProduct(prod, getMinimumQuantity(prod)) ? "disabled" : ""}>${available ? `AÑADIR${getMinimumQuantity(prod) > 1 ? ` (MÍN. ${getMinimumQuantity(prod)})` : " AL CARRITO"}` : (isStockControlled(prod) && getAvailabilityLabel(prod) === "Agotado" ? "AGOTADO" : "NO DISPONIBLE")}</button>
             <div class="product-detail-description">${escapeHtml(prod.descripcion || "")}</div>
             ${productNotesHTML}
-            <div class="product-detail-dates">${(prod.created_at || prod.fecha_creacion) ? `Creado: ${new Date(prod.created_at || prod.fecha_creacion).toLocaleDateString()}` : ""}${(prod.modified_at || prod.fecha_actualizacion) ? ` | Modificado: ${new Date(prod.modified_at || prod.fecha_actualizacion).toLocaleDateString()}` : ""}</div>
         </div>
       </div>
       
+      ${frequentlyBoughtTogetherHTML}
+
       ${relatedProducts.length > 0 ? `
         <section class="related-products-section">
           <h3 class="related-products-title">Productos Relacionados</h3>
@@ -1419,6 +1997,7 @@ function showProductDetail(
   const qtyMinusBtn = detailPage.querySelector("#qtyMinus");
   const qtyPlusBtn = detailPage.querySelector("#qtyPlus");
   const addToCartBtn = detailPage.querySelector("#addToCartBtn");
+  let floatingAddButton = null;
 
   let detailQty = getMinimumQuantity(prod);
   const syncQtyUI = () => {
@@ -1426,6 +2005,12 @@ function showProductDetail(
     if (qtyMinusBtn) qtyMinusBtn.disabled = detailQty <= getMinimumQuantity(prod);
     if (qtyPlusBtn) qtyPlusBtn.disabled = getAvailableStock(prod) < detailQty + 1;
     if (addToCartBtn) addToCartBtn.disabled = !canAddProduct(prod, detailQty);
+    if (floatingAddButton && addToCartBtn) {
+      floatingAddButton.disabled = addToCartBtn.disabled;
+      floatingAddButton.textContent = addToCartBtn.disabled
+        ? "No disponible"
+        : "Añadir";
+    }
   };
 
   if (qtyMinusBtn) {
@@ -1450,6 +2035,15 @@ function showProductDetail(
       syncQtyUI();
     });
   }
+  const addBundleButton = detailPage.querySelector(
+    "#addFrequentlyBoughtTogetherBtn",
+  );
+  if (addBundleButton) {
+    addBundleButton.addEventListener("click", () =>
+      addFrequentlyBoughtTogetherToCart(bundleProducts),
+    );
+  }
+  floatingAddButton = initProductDetailFloatingPanel(prod, addToCartBtn);
   detailPage.querySelectorAll("[data-product-image-index]").forEach((thumb) => {
     thumb.addEventListener("click", () => {
       const selectedImage = productImages[Number(thumb.dataset.productImageIndex)];
@@ -1484,6 +2078,7 @@ function showProductDetail(
 function showPackDetail(id, { replaceState = false, fromPopState = false } = {}) {
   const pack = allPacks.find((entry) => entry.id === id);
   if (!pack) return;
+  removeProductDetailFloatingPanel();
 
   if (!fromPopState) {
     savedScrollPosition = window.scrollY;
@@ -1495,6 +2090,7 @@ function showPackDetail(id, { replaceState = false, fromPopState = false } = {})
   document.querySelector(".hero") && (document.querySelector(".hero").style.display = "none");
   document.querySelector("footer").style.display = "none";
   document.getElementById("productDrawerOverlay").style.display = "none";
+  setHomepageChromeVisible(false);
   const detailPage = document.getElementById("product-detail-page");
   detailPage.style.display = "flex";
   requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: fromPopState ? "auto" : "smooth" }));

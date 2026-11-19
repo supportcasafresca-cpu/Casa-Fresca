@@ -1,0 +1,226 @@
+/* ============================================================
+   Interfaz de temporada para Casa Fresca
+   Conserva los colores y la identidad de Casa Fresca.
+   ============================================================ */
+
+.seasonal-carousel-container {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    min-width: 0;
+    max-width: 1200px;
+    height: auto;
+    margin: calc(var(--header-height) + 8px) auto 22px;
+    overflow-x: clip;
+}
+
+.seasonal-carousel-wrapper {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    touch-action: pan-x pan-y;
+}
+
+.seasonal-carousel-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.seasonal-slide {
+    position: relative;
+    flex: 0 0 298px;
+    width: 298px;
+    height: 478px;
+    scroll-snap-align: start;
+}
+
+.seasonal-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(74, 99, 80, 0.10);
+    border-radius: 10px;
+    background: var(--seasonal-bg);
+    box-shadow: 0 10px 24px -14px rgba(35, 55, 42, 0.38), 0 2px 6px rgba(35, 55, 42, 0.08);
+    color: #284734;
+    text-align: left;
+}
+
+.seasonal-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(120% 85% at 88% 2%, rgba(255, 255, 255, 0.9), transparent 58%),
+        radial-gradient(95% 75% at 4% 102%, rgba(0, 0, 0, 0.055), transparent 68%);
+}
+
+.seasonal-card-header {
+    position: relative;
+    z-index: 2;
+    min-height: 92px;
+}
+
+.seasonal-card-kicker {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 5px;
+    color: var(--seasonal-accent);
+    font-size: 0.69rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.seasonal-card-title {
+    margin: 0;
+    color: #284734;
+    font-size: 1.42rem;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+}
+
+.seasonal-card-subtitle {
+    margin: 7px 0 0;
+    color: #55705f;
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+
+.seasonal-card-grid {
+    display: grid;
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.seasonal-item {
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr) auto;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 4px 12px rgba(35, 55, 42, 0.08);
+    cursor: pointer;
+}
+
+.seasonal-item-image {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fff;
+}
+
+.seasonal-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
+.seasonal-item-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    z-index: 2;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: var(--primary-red);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.seasonal-item-badge-new {
+    background: #347b4b;
+}
+
+.seasonal-item-body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 5px 6px 7px;
+}
+
+.seasonal-item-title {
+    min-height: 2.4em;
+    overflow: hidden;
+    color: #2f4938;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+}
+
+.seasonal-item-price {
+    color: #b12704;
+    font-size: 0.76rem;
+    font-weight: 800;
+    margin-top: 2px;
+}
+
+.seasonal-card-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 2px 6px rgba(35, 55, 42, 0.10);
+    color: var(--seasonal-accent);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+    border: 1px solid #e2e7e3;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(35, 55, 42, 0.14);
+    color: #477158;
+    cursor: pointer;
+}
+
+.carousel-btn-prev {
+    left: 8px;
+}
+
+.carousel-btn-next {
+    right: 8px;
+}
+

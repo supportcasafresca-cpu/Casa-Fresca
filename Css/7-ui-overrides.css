@@ -1,0 +1,13 @@
+/* ============ ESTILOS ADICIONALES ======== */
+
+/* Estructura de nav-icons */
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.hidden {
+    display: none !important;
+}
+

@@ -1,0 +1,55 @@
+/* Reset y Variables */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --primary-red: #c62828;
+    --primary-red-dark: #9f2425;
+    --accent-orange: #d9952b;
+    --brand-green: #477158;
+    --brand-green-soft: #eef5ef;
+    --brand-red-soft: #fff4f3;
+    --brand-border: #e3e9e4;
+    --text-dark: #25332c;
+    --text-muted: #68756d;
+    --bg-light: #f5f7f5;
+    --bg-white: #ffffff;
+    --header-height: 136px;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+.skip-link {
+    position: fixed;
+    top: -60px;
+    left: 16px;
+    z-index: 1000;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--primary-red-dark);
+    color: #fff;
+    font-weight: 700;
+}
+
+.skip-link:focus {
+    top: 12px;
+}
+
+#catalogo {
+    scroll-margin-top: calc(var(--header-height) + 16px);
+}
+
+.products-area {
+    scroll-margin-top: calc(var(--header-height) + 16px);
+}
+
+body.catalog-view #catalogo {
+    padding-top: calc(var(--header-height) + 12px);
+}
